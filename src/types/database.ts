@@ -812,6 +812,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      move_application_stage: {
+        Args: {
+          p_application_id: string
+          p_note?: string
+          p_to_stage: Database["public"]["Enums"]["application_stage"]
+        }
+        Returns: undefined
+      }
       recalculate_passport_completion: {
         Args: { p_candidate_id: string }
         Returns: undefined

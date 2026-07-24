@@ -82,6 +82,15 @@ export default async function RecruiterJobDetailPage({
                 <Button type="submit">Publicar</Button>
               </form>
             ) : null}
+            {job.status === "open" || job.status === "closed" ? (
+              <Button
+                variant="outline"
+                nativeButton={false}
+                render={<Link href={`/recruiter/pipeline/${job.id}`} />}
+              >
+                Pipeline
+              </Button>
+            ) : null}
             {job.status === "open" ? (
               <>
                 <Button variant="outline" nativeButton={false} render={<Link href={`/jobs/${job.id}`} />}>

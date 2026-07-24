@@ -55,10 +55,10 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulos 3 y 5
 
 ## Módulo 7: Pipeline Kanban + Timeline del candidato ⭐ (corazón del producto)
-- [ ] Kanban del recruiter por job (drag & drop → moveStage)
-- [ ] Timeline visual en la app del candidato (application_events)
-- [ ] Supabase Realtime: el timeline se actualiza en vivo
-- [ ] Dashboard básico del candidato (lista de aplicaciones + estados)
+- [x] Kanban del recruiter por job (drag & drop → moveStage)
+- [x] Timeline visual en la app del candidato (application_events)
+- [x] Supabase Realtime: el timeline se actualiza en vivo
+- [x] Dashboard básico del candidato (lista de aplicaciones + estados)
 - Archivos: `src/app/recruiter/pipeline/[jobId]/*`, `src/app/candidate/applications/*`, `src/components/shared/Timeline.tsx`
 - Dependencias: Módulo 6
 

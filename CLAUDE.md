@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 6 — Easy Apply (migración `0005_applications.sql`: applications/application_events/saved_jobs con RLS candidato-o-compañía, primer evento del timeline creado automático vía trigger al aplicar; modal `EasyApplyModal` en `/jobs/[id]` — elegir CV, responder preguntas del job, enviar — con estado "Ya aplicaste" y toggle de guardar job, probado end-to-end)
-- Próximo módulo: Módulo 7 — Pipeline Kanban + Timeline del candidato
+- Último módulo completado: Módulo 7 — Pipeline Kanban + Timeline del candidato (migración `0006_pipeline.sql`: función `move_application_stage` (mueve etapa + registra evento atómicamente) + Realtime en `application_events` + policies nuevas para que el recruiter vea nombre/CV del candidato; Kanban drag & drop con `@dnd-kit` en `/recruiter/pipeline/[jobId]`, timeline compartido + lista de aplicaciones en vivo en `/candidate/applications`, probado end-to-end incluyendo Realtime)
+- Próximo módulo: Módulo 8 — ATS AI — Evaluación + Candidate Summary
 
 ## Reglas importantes
 

@@ -30,6 +30,13 @@ export default async function CandidateDashboardPage() {
             <Button
               variant="outline"
               nativeButton={false}
+              render={<Link href="/candidate/applications" />}
+            >
+              Mis aplicaciones
+            </Button>
+            <Button
+              variant="outline"
+              nativeButton={false}
               render={<Link href="/candidate/passport" />}
             >
               Mi Career Passport
