@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 2 — Auth + Roles (Supabase local vía Docker, migración `0001_auth.sql` con enums/profiles/trigger de signup/RLS, clients server/browser + `src/middleware.ts` con protección por rol, register/login/verify + callback OAuth, probado end-to-end)
-- Próximo módulo: Módulo 3 — Career Passport
+- Último módulo completado: Módulo 3 — Career Passport (migración `0002_passport.sql`: skills con seed, candidate_profiles + 6 tablas relacionadas, RLS+grants, función/trigger de `completion_pct`, bucket Storage `resumes` con policies; UI en `/candidate/passport` con secciones editables inline vía Server Actions en `src/actions/candidate.ts`, probado end-to-end)
+- Próximo módulo: Módulo 4 — Company + Recruiter Profile
 
 ## Reglas importantes
 

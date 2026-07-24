@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { signOutAction } from "@/actions/auth";
@@ -23,13 +24,22 @@ export default async function CandidateDashboardPage() {
     <main className="mx-auto max-w-3xl px-6 py-12">
       <PageHeader
         title={`Hola, ${profile?.full_name ?? "candidato"}`}
-        description="Dashboard de candidato — placeholder de Módulo 2. El contenido real llega en módulos futuros."
+        description="Dashboard de candidato — placeholder. El resto del contenido llega en módulos futuros."
         actions={
-          <form action={signOutAction}>
-            <Button type="submit" variant="outline">
-              Cerrar sesión
+          <>
+            <Button
+              variant="outline"
+              nativeButton={false}
+              render={<Link href="/candidate/passport" />}
+            >
+              Mi Career Passport
             </Button>
-          </form>
+            <form action={signOutAction}>
+              <Button type="submit" variant="outline">
+                Cerrar sesión
+              </Button>
+            </form>
+          </>
         }
       />
     </main>

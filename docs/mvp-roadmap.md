@@ -24,10 +24,10 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulo 1
 
 ## Módulo 3: Career Passport
-- [ ] Migración: candidate_profiles, work_experiences, educations, certifications, candidate_skills, candidate_languages, projects, resumes, skills (con seed)
-- [ ] UI del passport por secciones con edición inline
-- [ ] Upload de CV a Storage
-- [ ] Barra de completitud (función de DB)
+- [x] Migración: candidate_profiles, work_experiences, educations, certifications, candidate_skills, candidate_languages, projects, resumes, skills (con seed)
+- [x] UI del passport por secciones con edición inline
+- [x] Upload de CV a Storage
+- [x] Barra de completitud (función de DB)
 - Archivos: `0002_passport.sql`, `src/app/candidate/passport/*`, `src/actions/candidate.ts`
 - Dependencias: Módulo 2
 
