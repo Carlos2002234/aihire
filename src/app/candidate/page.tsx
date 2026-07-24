@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CircularProgress } from "@/components/shared/circular-progress";
+import { CompanyAvatar } from "@/components/shared/company-avatar";
 import { DonutChart } from "@/components/shared/donut-chart";
 import { Sparkline } from "@/components/shared/sparkline";
 import { createClient } from "@/lib/supabase/server";
@@ -21,18 +22,6 @@ function mockMatchPercent(seed: string): number {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   return 80 + (hash % 16);
-}
-
-function CompanyAvatar({ name, logoUrl }: { name: string; logoUrl?: string | null }) {
-  if (logoUrl) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={logoUrl} alt={name} className="size-11 rounded-lg object-cover" />;
-  }
-  return (
-    <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold text-foreground">
-      {name.slice(0, 2).toUpperCase()}
-    </div>
-  );
 }
 
 export default async function CandidateDashboardPage() {
