@@ -308,6 +308,165 @@ export type Database = {
           },
         ]
       }
+      job_questions: {
+        Row: {
+          id: string
+          job_id: string
+          position: number
+          question: string
+        }
+        Insert: {
+          id?: string
+          job_id: string
+          position: number
+          question: string
+        }
+        Update: {
+          id?: string
+          job_id?: string
+          position?: number
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_questions_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_required_skills: {
+        Row: {
+          id: string
+          job_id: string
+          language_level: string | null
+          min_years: number | null
+          required: boolean
+          skill_id: string
+        }
+        Insert: {
+          id?: string
+          job_id: string
+          language_level?: string | null
+          min_years?: number | null
+          required?: boolean
+          skill_id: string
+        }
+        Update: {
+          id?: string
+          job_id?: string
+          language_level?: string | null
+          min_years?: number | null
+          required?: boolean
+          skill_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_required_skills_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_required_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          benefits: string | null
+          company_id: string
+          created_at: string
+          description: string | null
+          employment_type: Database["public"]["Enums"]["employment_type"] | null
+          experience_level:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
+          id: string
+          location_city: string | null
+          location_country: string | null
+          published_at: string | null
+          recruiter_id: string
+          responsibilities: string | null
+          salary_currency: string
+          salary_max: number | null
+          salary_min: number | null
+          status: string
+          title: string
+          work_mode: Database["public"]["Enums"]["work_mode"] | null
+        }
+        Insert: {
+          benefits?: string | null
+          company_id: string
+          created_at?: string
+          description?: string | null
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          experience_level?:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
+          id?: string
+          location_city?: string | null
+          location_country?: string | null
+          published_at?: string | null
+          recruiter_id: string
+          responsibilities?: string | null
+          salary_currency?: string
+          salary_max?: number | null
+          salary_min?: number | null
+          status?: string
+          title: string
+          work_mode?: Database["public"]["Enums"]["work_mode"] | null
+        }
+        Update: {
+          benefits?: string | null
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          experience_level?:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
+          id?: string
+          location_city?: string | null
+          location_country?: string | null
+          published_at?: string | null
+          recruiter_id?: string
+          responsibilities?: string | null
+          salary_currency?: string
+          salary_max?: number | null
+          salary_min?: number | null
+          status?: string
+          title?: string
+          work_mode?: Database["public"]["Enums"]["work_mode"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_recruiter_id_fkey"
+            columns: ["recruiter_id"]
+            isOneToOne: false
+            referencedRelation: "recruiter_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

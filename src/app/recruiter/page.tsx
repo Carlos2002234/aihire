@@ -30,6 +30,13 @@ export default async function RecruiterDashboardPage() {
             <Button
               variant="outline"
               nativeButton={false}
+              render={<Link href="/recruiter/jobs" />}
+            >
+              Jobs
+            </Button>
+            <Button
+              variant="outline"
+              nativeButton={false}
               render={<Link href="/recruiter/company" />}
             >
               Mi compañía

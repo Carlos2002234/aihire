@@ -39,10 +39,10 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulo 2
 
 ## Módulo 5: Job Creation + Job Board público
-- [ ] Migración: jobs, job_required_skills, job_questions
-- [ ] Form de creación (wizard corto): datos, skills con años mínimos, opcionales, máx 5 preguntas
-- [ ] Draft → publish → close
-- [ ] `/jobs` público con filtros + `/jobs/[id]`
+- [x] Migración: jobs, job_required_skills, job_questions
+- [x] Form de creación (wizard corto): datos, skills con años mínimos, opcionales, máx 5 preguntas
+- [x] Draft → publish → close
+- [x] `/jobs` público con filtros + `/jobs/[id]`
 - Archivos: `0004_jobs.sql`, `src/app/recruiter/jobs/*`, `src/app/(public)/jobs/*`, `src/actions/jobs.ts`
 - Dependencias: Módulo 4
 

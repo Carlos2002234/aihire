@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 4 — Company + Recruiter Profile (migración `0003_companies.sql`: companies con lectura pública, recruiter_profiles dueño-only; onboarding crear/unirse en `/recruiter/company` con búsqueda en vivo vía Server Action en `src/actions/recruiter.ts`, página pública en `/companies/[id]`, probado end-to-end con dos recruiters compartiendo compañía)
-- Próximo módulo: Módulo 5 — Job Creation + Job Board público
+- Último módulo completado: Módulo 5 — Job Creation + Job Board público (migración `0004_jobs.sql`: jobs/job_required_skills/job_questions con lectura pública solo si `status='open'`; flujo recruiter crear→editar (datos, skills, preguntas máx. 5)→publicar/cerrar en `/recruiter/jobs`, job board público con filtros en `/jobs` + `/jobs/[id]`, probado end-to-end)
+- Próximo módulo: Módulo 6 — Easy Apply
 
 ## Reglas importantes
 
