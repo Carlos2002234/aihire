@@ -371,7 +371,7 @@ export default async function JobsBoardPage({
           )}
         </div>
 
-        <div className="hidden w-72 shrink-0 flex-col gap-4 xl:flex">
+        <div className="hidden w-72 shrink-0 flex-col gap-4 lg:flex">
           {isCandidate && recommended.length > 0 && (
             <Card>
               <CardContent className="flex flex-col gap-3">
