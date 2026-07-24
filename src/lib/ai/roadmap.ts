@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { sendFeedbackAvailableEmail } from "@/lib/email/send";
 import { getServiceClient } from "@/lib/supabase/service";
 import { fetchCandidatePassport } from "./candidate";
 import {
@@ -77,4 +78,15 @@ export async function generateRoadmap(feedbackId: string): Promise<void> {
       type: step.type,
     }))
   );
+
+  const jobTitle = roadmapInput.jobTitle;
+  await supabase.from("notifications").insert({
+    user_id: candidateId,
+    type: "feedback_available",
+    title: "Tu feedback ya está listo",
+    body: `Preparamos tu feedback y un roadmap personalizado para tu aplicación a ${jobTitle}.`,
+    link: "/candidate/roadmap",
+  });
+
+  await sendFeedbackAvailableEmail(candidateId, jobTitle);
 }

@@ -80,9 +80,9 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulo 8
 
 ## Módulo 10: Notificaciones + Emails
-- [ ] Migración: notifications
-- [ ] Campana in-app con Realtime + página de notificaciones
-- [ ] Emails con Resend: status change, entrevista, oferta, feedback disponible
+- [x] Migración: notifications
+- [x] Campana in-app con Realtime + página de notificaciones
+- [x] Emails con Resend: status change, entrevista, oferta, feedback disponible
 - Archivos: `0009_notifications.sql`, `src/lib/email/*`, `src/components/shared/NotificationBell.tsx`
 - Dependencias: Módulo 7
 

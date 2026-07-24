@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 
+import { sendStageChangeEmail } from "@/lib/email/send";
 import { createClient } from "@/lib/supabase/server";
 import type { ApplicationStage } from "@/lib/application-stages";
 
@@ -22,6 +24,10 @@ export async function moveApplicationStageAction(
     p_application_id: applicationId,
     p_to_stage: toStage,
   });
+
+  if (!error) {
+    after(() => sendStageChangeEmail(applicationId, toStage).catch(console.error));
+  }
 
   revalidatePath(`/recruiter/pipeline/${jobId}`);
 

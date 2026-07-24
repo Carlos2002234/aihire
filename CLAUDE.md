@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 9 — Rechazo con Feedback IA + Career Roadmap (migración `0008_feedback.sql`: tablas `feedback`/`roadmaps`/`roadmap_steps` + función `reject_application_with_feedback` SECURITY DEFINER que mueve la etapa a 'rejected' + registra el evento + inserta el feedback atómicamente, el único camino permitido para rechazar; `src/lib/ai/feedback.ts` (`generateFeedback`) y `src/lib/ai/roadmap.ts` (`generateRoadmap`, dispara async post-rechazo vía `after()`); pasaje de Career Passport compartido extraído a `src/lib/ai/candidate.ts`; modal de rechazo en el Kanban con flujo elegir razón → preview editable → enviar; vista de feedback + roadmap con checkboxes en `/candidate/roadmap`)
-- Próximo módulo: Módulo 10 — Notificaciones + Emails
+- Último módulo completado: Módulo 10 — Notificaciones + Emails (migración `0009_notifications.sql`: tabla `notifications` con Realtime + policies owner-only; trigger `notify_new_application` (recruiter recibe notificación de aplicación nueva) y extensión de `move_application_stage`/`reject_application_with_feedback` para notificar al candidato en cada cambio de etapa/rechazo; `src/lib/email/` con Resend — `sendStageChangeEmail`, `sendFeedbackAvailableEmail` disparados async vía `after()` desde `moveApplicationStageAction` y `generateRoadmap`; `NotificationBell` con Realtime + página `/notifications`, montados en layouts nuevos de `/candidate` y `/recruiter`. Intenté provisionar Resend vía Vercel Marketplace pero quedó pendiente de aceptar términos en el dashboard — se usa `RESEND_API_KEY` manual mientras tanto)
+- Próximo módulo: Módulo 11 — Dashboards + Analytics
 
 ## Reglas importantes
 
