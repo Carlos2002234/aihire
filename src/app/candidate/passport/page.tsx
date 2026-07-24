@@ -14,6 +14,7 @@ import {
   deleteProjectAction,
   deleteResumeAction,
   deleteWorkExperienceAction,
+  generateResumeAction,
   removeSkillAction,
   updateProfileSummaryAction,
   uploadResumeAction,
@@ -62,6 +63,7 @@ export default async function PassportPage() {
     { data: projects },
     { data: resumes },
     { data: skillsCatalog },
+    { data: savedJobs },
   ] = await Promise.all([
     supabase.from("candidate_profiles").select("*").eq("id", user.id).maybeSingle(),
     supabase
@@ -95,6 +97,11 @@ export default async function PassportPage() {
       .eq("candidate_id", user.id)
       .order("created_at", { ascending: false }),
     supabase.from("skills").select("id, name, category").order("category").order("name"),
+    supabase
+      .from("saved_jobs")
+      .select("job_id, jobs(title)")
+      .eq("candidate_id", user.id)
+      .order("created_at", { ascending: false }),
   ]);
 
   const takenSkillIds = new Set((candidateSkills ?? []).map((cs) => cs.skills?.id));
@@ -454,6 +461,21 @@ export default async function PassportPage() {
             />
             <Button type="submit" variant="outline">
               Subir CV
+            </Button>
+          </form>
+          <form action={generateResumeAction} className="flex items-center gap-2 border-t border-border pt-4">
+            <select name="targetJobId" defaultValue="" className={selectClassName()}>
+              <option value="">CV genérico</option>
+              {(savedJobs ?? [])
+                .filter((sj) => sj.jobs)
+                .map((sj) => (
+                  <option key={sj.job_id} value={sj.job_id}>
+                    Targeteado a: {sj.jobs!.title}
+                  </option>
+                ))}
+            </select>
+            <Button type="submit" variant="outline" className="shrink-0">
+              Generar CV con IA
             </Button>
           </form>
         </CardContent>

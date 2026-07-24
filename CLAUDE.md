@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 11 — Dashboards + Analytics (dashboards de `/candidate` y `/recruiter` reemplazan los placeholders de módulos anteriores; candidato ve aplicaciones totales, tiempo de respuesta promedio, feedback recibido, jobs guardados, completitud del passport y breakdown por etapa; recruiter ve jobs publicados, aplicaciones, conversión a oferta, tiempo a decisión, funnel acumulado por etapa y razones de rechazo más comunes — requirió agregar policy `feedback_select_recruiter` en `0010_dashboards.sql`; gráficas con `recharts` vía `StatTile`/`CountBarChart` reutilizables en `src/components/shared/`; verificado en navegador con datos reales de ambos roles vía Playwright)
-- Próximo módulo: Módulo 12 — AI Resume Builder + Career Coach + Interview Prep (v2, fuera del MVP — confirmar con el usuario antes de arrancar)
+- Último módulo completado: Módulo 12 (parcial, v2) — AI Resume Builder (usuario confirmó explícitamente arrancar v2). `src/lib/ai/resume.tsx`: `generateResumeContent` (Anthropic, structured outputs, reusa `fetchCandidatePassport`) + `renderResumePdf` (`@react-pdf/renderer`, sin dark mode — un CV es para imprimir/adjuntar). `generateResumeAction` en `src/actions/candidate.ts` sube el PDF al bucket `resumes` existente e inserta la fila con `is_ai_generated=true`. UI: selector "CV genérico / targeteado a job guardado" + botón en `/candidate/passport`. Career Coach e Interview Prep del Módulo 12 quedan pendientes (Interview Prep no tiene spec — definir con el usuario antes de construir)
+- Próximo módulo: a definir con el usuario — Career Coach (resto del Módulo 12), o volver al MVP
 
 ## Reglas importantes
 

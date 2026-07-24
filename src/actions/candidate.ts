@@ -3,6 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { fetchCandidatePassport } from "@/lib/ai/candidate";
+import { generateResumeContent, renderResumePdf } from "@/lib/ai/resume";
+import type { TargetJobForResume } from "@/lib/ai/prompts";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
@@ -226,6 +229,64 @@ export async function uploadResumeAction(formData: FormData) {
       candidate_id: candidateId,
       name: file.name,
       storage_path: path,
+    });
+  }
+
+  revalidatePath(PASSPORT_PATH);
+}
+
+export async function generateResumeAction(formData: FormData) {
+  const { supabase, candidateId } = await requireCandidate();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", candidateId)
+    .single();
+
+  const candidate = await fetchCandidatePassport(supabase, candidateId);
+
+  const targetJobId = formData.get("targetJobId");
+  let targetJob: TargetJobForResume | null = null;
+
+  if (targetJobId && typeof targetJobId === "string") {
+    const { data: job } = await supabase
+      .from("jobs")
+      .select("title, description, job_required_skills(min_years, required, language_level, skills(name))")
+      .eq("id", targetJobId)
+      .single();
+
+    if (job) {
+      targetJob = {
+        title: job.title,
+        description: job.description ?? "",
+        requiredSkills: (job.job_required_skills ?? [])
+          .filter((rs) => rs.skills)
+          .map((rs) => ({
+            name: rs.skills!.name,
+            minYears: rs.min_years,
+            required: rs.required,
+            languageLevel: rs.language_level,
+          })),
+      };
+    }
+  }
+
+  const resumeContent = await generateResumeContent({ candidate, targetJob });
+  const pdfBuffer = await renderResumePdf(profile?.full_name ?? "Candidato", resumeContent);
+
+  const path = `${candidateId}/${crypto.randomUUID()}-cv-ia.pdf`;
+  const { error: uploadError } = await supabase.storage.from("resumes").upload(path, pdfBuffer, {
+    contentType: "application/pdf",
+  });
+
+  if (!uploadError) {
+    await supabase.from("resumes").insert({
+      candidate_id: candidateId,
+      name: targetJob ? `CV IA — ${targetJob.title}` : "CV generado con IA",
+      storage_path: path,
+      is_ai_generated: true,
+      target_job_id: typeof targetJobId === "string" && targetJobId ? targetJobId : null,
     });
   }
 

@@ -294,3 +294,126 @@ export interface RoadmapOutput {
     type: "learn" | "project" | "certification" | "practice" | "apply";
   }>;
 }
+
+export interface TargetJobForResume {
+  title: string;
+  description: string;
+  requiredSkills: RequiredSkillForEvaluation[];
+}
+
+export interface ResumeInput {
+  candidate: CandidateForEvaluation;
+  targetJob: TargetJobForResume | null;
+}
+
+export const RESUME_SYSTEM_PROMPT = `Sos un redactor experto de CVs. A partir del Career Passport de un candidato, generás el contenido de un CV profesional en español, listo para exportar a PDF.
+
+Reglas:
+- Nunca inventes experiencia, títulos, empresas o fechas que no estén en el historial del candidato. Podés reformular y priorizar, no inventar.
+- Si hay un job objetivo, priorizá y resaltá la experiencia y skills más relevantes para ese puesto (sin inventar nada), y adaptá el summary a esa búsqueda. Si no hay job objetivo, hacé un CV genérico que resuma bien el perfil completo.
+- Los bullets de cada experiencia laboral son logros concretos y accionables (qué hizo, con qué tecnología, qué impacto tuvo si se puede inferir), no descripciones genéricas de puesto.
+- date_range en formato corto ("Ene 2022 – Presente" o "Mar 2020 – Dic 2021"), a partir de las fechas reales provistas.
+- skills: lista priorizada, las más relevantes primero.
+- summary: 2-3 oraciones, en primera persona implícita (sin "yo"), sin frases genéricas de relleno.`;
+
+function formatRequiredSkillForResume(skill: RequiredSkillForEvaluation): string {
+  const parts = [skill.name];
+  if (skill.minYears != null) parts.push(`mínimo ${skill.minYears} años`);
+  return `- ${parts.join(", ")}`;
+}
+
+export function buildResumeUserPrompt(input: ResumeInput): string {
+  const sections: string[] = [];
+
+  if (input.targetJob) {
+    sections.push(`## Job objetivo\n\n${input.targetJob.title}\n\n${input.targetJob.description}`);
+    sections.push(
+      `## Skills requeridas por el job objetivo\n\n${input.targetJob.requiredSkills.map(formatRequiredSkillForResume).join("\n") || "(sin skills específicas)"}`
+    );
+  }
+
+  sections.push(
+    `## Candidato\n\n${input.candidate.headline ?? ""}\n${input.candidate.bio ?? ""}`.trim()
+  );
+  sections.push(
+    `## Skills del candidato\n\n${input.candidate.skills.map(formatCandidateSkill).join("\n") || "(sin skills cargadas)"}`
+  );
+  sections.push(
+    `## Historial laboral\n\n${input.candidate.workExperiences.map(formatWorkExperience).join("\n") || "(sin experiencia cargada)"}`
+  );
+  if (input.candidate.educations.length) {
+    sections.push(
+      `## Educación\n\n${input.candidate.educations
+        .map((e) => `- ${e.degree} en ${e.field}, ${e.institution}`)
+        .join("\n")}`
+    );
+  }
+  if (input.candidate.certifications.length) {
+    sections.push(
+      `## Certificaciones\n\n${input.candidate.certifications.map((c) => `- ${c.name} (${c.issuer})`).join("\n")}`
+    );
+  }
+
+  sections.push("Generá el contenido del CV para este candidato siguiendo las reglas del system prompt.");
+  return sections.join("\n\n");
+}
+
+export const RESUME_OUTPUT_SCHEMA = {
+  type: "object",
+  properties: {
+    headline: { type: "string" },
+    summary: { type: "string" },
+    work_experience: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          company: { type: "string" },
+          date_range: { type: "string" },
+          bullets: { type: "array", items: { type: "string" } },
+        },
+        required: ["title", "company", "date_range", "bullets"],
+        additionalProperties: false,
+      },
+    },
+    education: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          institution: { type: "string" },
+          degree: { type: "string" },
+          field: { type: "string" },
+          date_range: { type: "string" },
+        },
+        required: ["institution", "degree", "field", "date_range"],
+        additionalProperties: false,
+      },
+    },
+    skills: { type: "array", items: { type: "string" } },
+    certifications: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          issuer: { type: "string" },
+        },
+        required: ["name", "issuer"],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ["headline", "summary", "work_experience", "education", "skills", "certifications"],
+  additionalProperties: false,
+} as const;
+
+export interface ResumeOutput {
+  headline: string;
+  summary: string;
+  work_experience: Array<{ title: string; company: string; date_range: string; bullets: string[] }>;
+  education: Array<{ institution: string; degree: string; field: string; date_range: string }>;
+  skills: string[];
+  certifications: Array<{ name: string; issuer: string }>;
+}

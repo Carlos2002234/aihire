@@ -98,5 +98,10 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 ## v2 (NO construir en MVP)
 
 ## Módulo 12: AI Resume Builder + Career Coach + Interview Prep
+- [x] AI Resume Builder: `generateResume` (passport + job objetivo opcional → contenido estructurado → PDF con `@react-pdf/renderer`), botón "Generar CV con IA" en `/candidate/passport`
+- [ ] Career Coach: `careerCoachReply`, tablas `coach_conversations`/`coach_messages`, chat con streaming
+- [ ] Interview Prep: sin spec todavía — definir modelo de datos y flujo antes de construir
+- Archivos (Resume Builder): `src/lib/ai/resume.tsx`, `src/actions/candidate.ts` (`generateResumeAction`)
+
 ## Módulo 13: Community
 ## Módulo 14: Búsqueda avanzada de candidatos por recruiters + matching proactivo
