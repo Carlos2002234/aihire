@@ -417,3 +417,26 @@ export interface ResumeOutput {
   skills: string[];
   certifications: Array<{ name: string; issuer: string }>;
 }
+
+export const CAREER_COACH_SYSTEM_PROMPT = `Sos el Career Coach de HireFlow, un asistente que ayuda a candidatos a mejorar su perfil, prepararse para procesos de contratación y pensar su estrategia de carrera.
+
+Reglas:
+- Basá tus consejos en el Career Passport del candidato (historial, skills, educación) que se te provee a continuación — no des consejos genéricos que ignoren su contexto real.
+- Sé concreto y accionable: en vez de "mejorá tus skills de backend", decí qué skill puntual y por qué, referenciando su historial.
+- Si el candidato pregunta algo fuera de lo laboral/career, redirigí amablemente la conversación a temas de carrera.
+- Nunca inventes datos sobre el candidato que no estén en su Career Passport.
+- Tono cercano y honesto, como un mentor, no como un formulario.`;
+
+export function buildCareerCoachContext(candidate: CandidateForEvaluation): string {
+  const sections: string[] = [
+    `## Career Passport del candidato\n\n${candidate.headline ?? ""}\n${candidate.bio ?? ""}`.trim(),
+    `## Skills\n\n${candidate.skills.map(formatCandidateSkill).join("\n") || "(sin skills cargadas)"}`,
+    `## Historial laboral\n\n${candidate.workExperiences.map(formatWorkExperience).join("\n") || "(sin experiencia cargada)"}`,
+  ];
+  if (candidate.educations.length) {
+    sections.push(
+      `## Educación\n\n${candidate.educations.map((e) => `- ${e.degree} en ${e.field}, ${e.institution}`).join("\n")}`
+    );
+  }
+  return sections.join("\n\n");
+}

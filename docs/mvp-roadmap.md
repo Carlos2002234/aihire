@@ -99,9 +99,10 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 
 ## Módulo 12: AI Resume Builder + Career Coach + Interview Prep
 - [x] AI Resume Builder: `generateResume` (passport + job objetivo opcional → contenido estructurado → PDF con `@react-pdf/renderer`), botón "Generar CV con IA" en `/candidate/passport`
-- [ ] Career Coach: `careerCoachReply`, tablas `coach_conversations`/`coach_messages`, chat con streaming
+- [x] Career Coach: chat con streaming en `/candidate/coach`, tablas `coach_conversations`/`coach_messages`. Usa Vercel AI SDK (`ai` + `@ai-sdk/anthropic` + `@ai-sdk/react`, `useChat` + `streamText`) en vez del SDK crudo de Anthropic — única excepción en el proyecto, justificada porque el streaming a `useChat` necesita un endpoint HTTP (`/api/coach/route.ts`), algo que un Server Action no puede transportar
 - [ ] Interview Prep: sin spec todavía — definir modelo de datos y flujo antes de construir
 - Archivos (Resume Builder): `src/lib/ai/resume.tsx`, `src/actions/candidate.ts` (`generateResumeAction`)
+- Archivos (Career Coach): `0011_coach.sql`, `src/app/api/coach/route.ts`, `src/app/candidate/coach/page.tsx`, `src/components/candidate/coach-chat.tsx`
 
 ## Módulo 13: Community
 ## Módulo 14: Búsqueda avanzada de candidatos por recruiters + matching proactivo

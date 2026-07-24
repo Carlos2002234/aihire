@@ -90,6 +90,13 @@ export default async function CandidateDashboardPage() {
             >
               Mi Career Passport
             </Button>
+            <Button
+              variant="outline"
+              nativeButton={false}
+              render={<Link href="/candidate/coach" />}
+            >
+              Career Coach
+            </Button>
             <form action={signOutAction}>
               <Button type="submit" variant="outline">
                 Cerrar sesión

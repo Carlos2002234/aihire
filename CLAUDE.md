@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 12 (parcial, v2) — AI Resume Builder (usuario confirmó explícitamente arrancar v2). `src/lib/ai/resume.tsx`: `generateResumeContent` (Anthropic, structured outputs, reusa `fetchCandidatePassport`) + `renderResumePdf` (`@react-pdf/renderer`, sin dark mode — un CV es para imprimir/adjuntar). `generateResumeAction` en `src/actions/candidate.ts` sube el PDF al bucket `resumes` existente e inserta la fila con `is_ai_generated=true`. UI: selector "CV genérico / targeteado a job guardado" + botón en `/candidate/passport`. Career Coach e Interview Prep del Módulo 12 quedan pendientes (Interview Prep no tiene spec — definir con el usuario antes de construir)
-- Próximo módulo: a definir con el usuario — Career Coach (resto del Módulo 12), o volver al MVP
+- Último módulo completado: Módulo 12 (parcial, v2) — AI Resume Builder + Career Coach (usuario confirmó explícitamente arrancar v2). Resume Builder: `src/lib/ai/resume.tsx` (`generateResumeContent` + `renderResumePdf` con `@react-pdf/renderer`), botón en `/candidate/passport`. Career Coach: migración `0011_coach.sql` (`coach_conversations`/`coach_messages`, RLS owner-only), chat con streaming en `/candidate/coach` vía Vercel AI SDK (`ai` + `@ai-sdk/anthropic` + `@ai-sdk/react`, `useChat`/`streamText`) — la única función de `/src/lib/ai/` que no usa el SDK crudo de Anthropic, y `/api/coach/route.ts` es la única API route del proyecto fuera de webhooks, ambas excepciones deliberadas porque `useChat` necesita un endpoint HTTP que devuelva un stream. Se bump'eó `react`/`react-dom` a `19.1.2` (patch, requerido por `@ai-sdk/react`). Interview Prep (última pieza del Módulo 12) sigue sin spec — definir con el usuario antes de construir
+- Próximo módulo: a definir con el usuario — Interview Prep (sin spec, resto del Módulo 12), o volver al MVP
 
 ## Reglas importantes
 
