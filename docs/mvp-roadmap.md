@@ -16,10 +16,10 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: ninguna
 
 ## Módulo 2: Auth + Roles
-- [ ] Proyecto Supabase + migración inicial (enums, profiles, trigger on signup)
-- [ ] Clients Supabase (server/browser) + middleware de sesión
-- [ ] Register con selección de rol, Login, OAuth Google/GitHub
-- [ ] Verificación de email + rutas protegidas por rol
+- [x] Proyecto Supabase + migración inicial (enums, profiles, trigger on signup)
+- [x] Clients Supabase (server/browser) + middleware de sesión
+- [x] Register con selección de rol, Login, OAuth Google/GitHub
+- [x] Verificación de email + rutas protegidas por rol
 - Archivos: `supabase/migrations/0001_auth.sql`, `src/lib/supabase/*`, `src/app/(auth)/*`, `middleware.ts`
 - Dependencias: Módulo 1
 

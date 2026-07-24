@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 1 — Setup + Design System (Next.js 15 + TS estricto + Tailwind v4 + shadcn/ui, tokens dark-first con acento verde, theme provider dark por defecto, componentes base Button/Card/Badge/Input/EmptyState/PageHeader, página temporal `/design`)
-- Próximo módulo: Módulo 2 — Auth + Roles
+- Último módulo completado: Módulo 2 — Auth + Roles (Supabase local vía Docker, migración `0001_auth.sql` con enums/profiles/trigger de signup/RLS, clients server/browser + `src/middleware.ts` con protección por rol, register/login/verify + callback OAuth, probado end-to-end)
+- Próximo módulo: Módulo 3 — Career Passport
 
 ## Reglas importantes
 
