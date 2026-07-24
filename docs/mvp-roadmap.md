@@ -7,12 +7,12 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 ---
 
 ## Módulo 1: Setup + Design System
-- [ ] `create-next-app` con TypeScript + Tailwind + App Router
-- [ ] Instalar y configurar shadcn/ui
-- [ ] Tokens de diseño: paleta dark-first, tipografía (Inter o Geist), spacing, radius
-- [ ] Componentes base: Button, Card, Badge, Input, EmptyState, PageHeader
-- [ ] Layout raíz + theme provider (dark default)
-- Archivos: `tailwind.config.ts`, `src/app/globals.css`, `src/components/ui/*`
+- [x] `create-next-app` con TypeScript + Tailwind + App Router
+- [x] Instalar y configurar shadcn/ui
+- [x] Tokens de diseño: paleta dark-first, tipografía (Inter o Geist), spacing, radius
+- [x] Componentes base: Button, Card, Badge, Input, EmptyState, PageHeader
+- [x] Layout raíz + theme provider (dark default)
+- Archivos: `src/app/globals.css` (Tailwind v4 CSS-first, no `tailwind.config.ts`), `src/components/ui/*`
 - Dependencias: ninguna
 
 ## Módulo 2: Auth + Roles
