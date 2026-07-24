@@ -162,3 +162,135 @@ export interface EvaluationOutput {
   }>;
   reasoning: string;
 }
+
+export interface FeedbackInput {
+  jobTitle: string;
+  rejectionReasonLabel: string;
+  recruiterComment: string | null;
+  evaluationSummary: string | null;
+  evaluationStrengths: string[];
+  evaluationGaps: string[];
+}
+
+export const FEEDBACK_SYSTEM_PROMPT = `Sos el asistente de ATS de HireFlow. Redactás el feedback que un candidato recibe cuando lo rechazan de un puesto.
+
+Reglas:
+- Nunca debe sentirse como un portazo: tono constructivo, honesto y respetuoso.
+- Basate en evidencia concreta (el resumen y los gaps de la evaluación IA, y el comentario del recruiter si existe), nunca inventes razones nuevas fuera de la razón de rechazo indicada.
+- strengths reconoce genuinamente lo bueno del perfil, aunque no haya alcanzado para este puesto.
+- areas_to_improve son accionables, no genéricas ("profundizar en X" en vez de "mejorar skills").
+- missing_skills lista solo skills técnicas concretas ausentes o insuficientes, en el mismo formato que aparecen en el catálogo de skills (nombres cortos, ej. "Kubernetes", no frases).`;
+
+export function buildFeedbackUserPrompt(input: FeedbackInput): string {
+  const sections: string[] = [
+    `## Job\n\n${input.jobTitle}`,
+    `## Razón de rechazo\n\n${input.rejectionReasonLabel}`,
+  ];
+  if (input.recruiterComment) {
+    sections.push(`## Comentario del recruiter\n\n${input.recruiterComment}`);
+  }
+  if (input.evaluationSummary) {
+    sections.push(`## Resumen de la evaluación IA\n\n${input.evaluationSummary}`);
+  }
+  if (input.evaluationGaps.length) {
+    sections.push(`## Gaps detectados en la evaluación\n\n${input.evaluationGaps.map((g) => `- ${g}`).join("\n")}`);
+  }
+  if (input.evaluationStrengths.length) {
+    sections.push(
+      `## Fortalezas detectadas en la evaluación\n\n${input.evaluationStrengths.map((s) => `- ${s}`).join("\n")}`
+    );
+  }
+  sections.push("Redactá el feedback para este candidato siguiendo las reglas del system prompt.");
+  return sections.join("\n\n");
+}
+
+export const FEEDBACK_OUTPUT_SCHEMA = {
+  type: "object",
+  properties: {
+    ai_message: { type: "string" },
+    strengths: { type: "array", items: { type: "string" } },
+    areas_to_improve: { type: "array", items: { type: "string" } },
+    missing_skills: { type: "array", items: { type: "string" } },
+  },
+  required: ["ai_message", "strengths", "areas_to_improve", "missing_skills"],
+  additionalProperties: false,
+} as const;
+
+export interface FeedbackOutput {
+  ai_message: string;
+  strengths: string[];
+  areas_to_improve: string[];
+  missing_skills: string[];
+}
+
+export interface RoadmapInput {
+  jobTitle: string;
+  aiMessage: string;
+  areasToImprove: string[];
+  missingSkills: string[];
+  candidate: CandidateForEvaluation;
+}
+
+export const ROADMAP_SYSTEM_PROMPT = `Sos el career coach de HireFlow. A partir del feedback de un rechazo, generás un plan de carrera concreto para que el candidato mejore y pueda volver a aplicar.
+
+Reglas:
+- Entre 4 y 8 pasos, ordenados de forma lógica (primero aprender, después practicar/certificar, por último volver a aplicar).
+- Cada paso ataca directamente un gap o skill faltante mencionado en el feedback — nada genérico.
+- Usá el historial y las skills existentes del candidato como base: no le pidas aprender algo que ya sabe.
+- type de cada paso: 'learn' (estudiar/curso), 'project' (proyecto práctico), 'certification', 'practice' (ejercicios/repaso) o 'apply' (volver a aplicar a jobs similares).
+- title breve y accionable; description con el detalle de qué hacer y por qué ayuda.`;
+
+export function buildRoadmapUserPrompt(input: RoadmapInput): string {
+  const sections: string[] = [
+    `## Job al que aplicó\n\n${input.jobTitle}`,
+    `## Feedback recibido\n\n${input.aiMessage}`,
+  ];
+  if (input.areasToImprove.length) {
+    sections.push(`## Áreas a mejorar\n\n${input.areasToImprove.map((a) => `- ${a}`).join("\n")}`);
+  }
+  if (input.missingSkills.length) {
+    sections.push(`## Skills faltantes\n\n${input.missingSkills.map((s) => `- ${s}`).join("\n")}`);
+  }
+  sections.push(
+    `## Skills actuales del candidato\n\n${input.candidate.skills.map(formatCandidateSkill).join("\n") || "(sin skills cargadas)"}`
+  );
+  sections.push(
+    `## Historial laboral\n\n${input.candidate.workExperiences.map(formatWorkExperience).join("\n") || "(sin experiencia cargada)"}`
+  );
+  sections.push("Generá el roadmap para este candidato siguiendo las reglas del system prompt.");
+  return sections.join("\n\n");
+}
+
+export const ROADMAP_OUTPUT_SCHEMA = {
+  type: "object",
+  properties: {
+    title: { type: "string" },
+    steps: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          description: { anyOf: [{ type: "string" }, { type: "null" }] },
+          type: {
+            type: "string",
+            enum: ["learn", "project", "certification", "practice", "apply"],
+          },
+        },
+        required: ["title", "description", "type"],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ["title", "steps"],
+  additionalProperties: false,
+} as const;
+
+export interface RoadmapOutput {
+  title: string;
+  steps: Array<{
+    title: string;
+    description: string | null;
+    type: "learn" | "project" | "certification" | "practice" | "apply";
+  }>;
+}

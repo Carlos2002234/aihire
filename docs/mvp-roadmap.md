@@ -72,10 +72,10 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulo 7
 
 ## Módulo 9: Rechazo con Feedback IA + Career Roadmap
-- [ ] Migración: feedback, roadmaps, roadmap_steps
-- [ ] Flujo de rechazo del recruiter: elegir razón → preview del feedback IA → enviar
-- [ ] Vista de feedback del candidato (por qué, fortalezas, gaps, comentario)
-- [ ] Roadmap generado automáticamente, con checkboxes de progreso
+- [x] Migración: feedback, roadmaps, roadmap_steps
+- [x] Flujo de rechazo del recruiter: elegir razón → preview del feedback IA → enviar
+- [x] Vista de feedback del candidato (por qué, fortalezas, gaps, comentario)
+- [x] Roadmap generado automáticamente, con checkboxes de progreso
 - Archivos: `0008_feedback.sql`, `src/lib/ai/feedback.ts`, `src/app/candidate/roadmap/*`
 - Dependencias: Módulo 8
 

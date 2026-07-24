@@ -18,7 +18,9 @@ export default async function CandidateApplicationsPage() {
 
   const { data: applications } = await supabase
     .from("applications")
-    .select("id, jobs(title, companies(name)), application_events(id, to_stage, note, created_at)")
+    .select(
+      "id, jobs(title, companies(name)), application_events(id, to_stage, note, created_at), feedback(ai_message, strengths, areas_to_improve)"
+    )
     .eq("candidate_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -27,6 +29,13 @@ export default async function CandidateApplicationsPage() {
     jobTitle: a.jobs?.title ?? "Job",
     companyName: a.jobs?.companies?.name ?? null,
     events: a.application_events ?? [],
+    feedback: a.feedback
+      ? {
+          aiMessage: a.feedback.ai_message,
+          strengths: a.feedback.strengths,
+          areasToImprove: a.feedback.areas_to_improve,
+        }
+      : null,
   }));
 
   return (

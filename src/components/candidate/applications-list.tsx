@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,11 +15,18 @@ interface TimelineEvent {
   created_at: string;
 }
 
+interface ApplicationFeedback {
+  aiMessage: string;
+  strengths: string[];
+  areasToImprove: string[];
+}
+
 interface ApplicationWithEvents {
   id: string;
   jobTitle: string;
   companyName: string | null;
   events: TimelineEvent[];
+  feedback: ApplicationFeedback | null;
 }
 
 function ApplicationsList({
@@ -91,8 +99,29 @@ function ApplicationsList({
             <CardTitle>{app.jobTitle}</CardTitle>
             {app.companyName ? <CardDescription>{app.companyName}</CardDescription> : null}
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col gap-4">
             <Timeline events={app.events} />
+            {app.feedback && (
+              <div className="rounded-lg border border-border bg-muted/30 p-3 text-sm">
+                <p className="font-medium text-foreground">Feedback</p>
+                <p className="mt-1 text-muted-foreground">{app.feedback.aiMessage}</p>
+                {app.feedback.strengths.length ? (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    <span className="font-medium text-foreground">Fortalezas: </span>
+                    {app.feedback.strengths.join(", ")}
+                  </p>
+                ) : null}
+                {app.feedback.areasToImprove.length ? (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    <span className="font-medium text-foreground">A mejorar: </span>
+                    {app.feedback.areasToImprove.join(", ")}
+                  </p>
+                ) : null}
+                <Link href="/candidate/roadmap" className="mt-2 inline-block text-xs text-primary underline">
+                  Ver tu roadmap personalizado
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
       ))}

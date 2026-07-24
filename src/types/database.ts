@@ -455,6 +455,50 @@ export type Database = {
           },
         ]
       }
+      feedback: {
+        Row: {
+          ai_message: string
+          application_id: string
+          areas_to_improve: string[]
+          created_at: string
+          id: string
+          missing_skills: string[]
+          recruiter_comment: string | null
+          rejection_reason: Database["public"]["Enums"]["rejection_reason"]
+          strengths: string[]
+        }
+        Insert: {
+          ai_message: string
+          application_id: string
+          areas_to_improve?: string[]
+          created_at?: string
+          id?: string
+          missing_skills?: string[]
+          recruiter_comment?: string | null
+          rejection_reason: Database["public"]["Enums"]["rejection_reason"]
+          strengths?: string[]
+        }
+        Update: {
+          ai_message?: string
+          application_id?: string
+          areas_to_improve?: string[]
+          created_at?: string
+          id?: string
+          missing_skills?: string[]
+          recruiter_comment?: string | null
+          rejection_reason?: Database["public"]["Enums"]["rejection_reason"]
+          strengths?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_questions: {
         Row: {
           id: string
@@ -759,6 +803,83 @@ export type Database = {
           },
         ]
       }
+      roadmap_steps: {
+        Row: {
+          completed: boolean
+          description: string | null
+          id: string
+          position: number
+          roadmap_id: string
+          title: string
+          type: string
+        }
+        Insert: {
+          completed?: boolean
+          description?: string | null
+          id?: string
+          position: number
+          roadmap_id: string
+          title: string
+          type: string
+        }
+        Update: {
+          completed?: boolean
+          description?: string | null
+          id?: string
+          position?: number
+          roadmap_id?: string
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roadmap_steps_roadmap_id_fkey"
+            columns: ["roadmap_id"]
+            isOneToOne: false
+            referencedRelation: "roadmaps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roadmaps: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          feedback_id: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          feedback_id?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          feedback_id?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roadmaps_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidate_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roadmaps_feedback_id_fkey"
+            columns: ["feedback_id"]
+            isOneToOne: false
+            referencedRelation: "feedback"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_jobs: {
         Row: {
           candidate_id: string
@@ -870,6 +991,18 @@ export type Database = {
       recalculate_passport_completion: {
         Args: { p_candidate_id: string }
         Returns: undefined
+      }
+      reject_application_with_feedback: {
+        Args: {
+          p_ai_message: string
+          p_application_id: string
+          p_areas_to_improve: string[]
+          p_missing_skills: string[]
+          p_recruiter_comment: string
+          p_rejection_reason: Database["public"]["Enums"]["rejection_reason"]
+          p_strengths: string[]
+        }
+        Returns: string
       }
     }
     Enums: {

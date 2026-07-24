@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 8 — ATS AI — Evaluación + Candidate Summary (migración `0007_ai.sql`: tabla `ai_evaluations` con RLS de solo lectura para recruiters del job; `src/lib/ai/evaluate.ts` con `evaluateApplication` (Anthropic `claude-opus-4-8`, structured outputs) + `inferYearsFromHistory` (cálculo determinístico de años por skill que además hace upsert de `candidate_skills` inferidas); disparo async post-apply vía `after()` en `applyToJobAction`; card del Kanban muestra score + summary con estado "Evaluando…" mientras no hay `ai_evaluations`)
-- Próximo módulo: Módulo 9 — Rechazo con Feedback IA + Career Roadmap
+- Último módulo completado: Módulo 9 — Rechazo con Feedback IA + Career Roadmap (migración `0008_feedback.sql`: tablas `feedback`/`roadmaps`/`roadmap_steps` + función `reject_application_with_feedback` SECURITY DEFINER que mueve la etapa a 'rejected' + registra el evento + inserta el feedback atómicamente, el único camino permitido para rechazar; `src/lib/ai/feedback.ts` (`generateFeedback`) y `src/lib/ai/roadmap.ts` (`generateRoadmap`, dispara async post-rechazo vía `after()`); pasaje de Career Passport compartido extraído a `src/lib/ai/candidate.ts`; modal de rechazo en el Kanban con flujo elegir razón → preview editable → enviar; vista de feedback + roadmap con checkboxes en `/candidate/roadmap`)
+- Próximo módulo: Módulo 10 — Notificaciones + Emails
 
 ## Reglas importantes
 

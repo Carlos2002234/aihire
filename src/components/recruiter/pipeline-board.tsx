@@ -10,6 +10,7 @@ import {
 
 import { moveApplicationStageAction } from "@/actions/pipeline";
 import { Badge } from "@/components/ui/badge";
+import { RejectApplicationModal } from "@/components/recruiter/reject-application-modal";
 import { APPLICATION_STAGES, STAGE_LABELS, type ApplicationStage } from "@/lib/application-stages";
 import { cn } from "@/lib/utils";
 
@@ -101,6 +102,7 @@ function PipelineBoard({
   applications: PipelineApplication[];
 }) {
   const [items, setItems] = useState(applications);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -110,6 +112,14 @@ function PipelineBoard({
     const toStage = over.id as ApplicationStage;
     const current = items.find((a) => a.id === applicationId);
     if (!current || current.stage === toStage) return;
+
+    // Rechazar nunca es un simple cambio de etapa — pasa por el flujo de
+    // feedback (docs/api.md: "moveStage nunca permite mover a 'rejected'
+    // directamente"). El modal decide si el card se mueve.
+    if (toStage === "rejected") {
+      setRejectingId(applicationId);
+      return;
+    }
 
     const previousStage = current.stage;
     setItems((prev) =>
@@ -136,6 +146,21 @@ function PipelineBoard({
           />
         ))}
       </div>
+      {rejectingId && (
+        <RejectApplicationModal
+          open
+          applicationId={rejectingId}
+          jobId={jobId}
+          onOpenChange={(open) => {
+            if (!open) setRejectingId(null);
+          }}
+          onRejected={() => {
+            setItems((prev) =>
+              prev.map((a) => (a.id === rejectingId ? { ...a, stage: "rejected" } : a))
+            );
+          }}
+        />
+      )}
     </DndContext>
   );
 }
