@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 7 — Pipeline Kanban + Timeline del candidato (migración `0006_pipeline.sql`: función `move_application_stage` (mueve etapa + registra evento atómicamente) + Realtime en `application_events` + policies nuevas para que el recruiter vea nombre/CV del candidato; Kanban drag & drop con `@dnd-kit` en `/recruiter/pipeline/[jobId]`, timeline compartido + lista de aplicaciones en vivo en `/candidate/applications`, probado end-to-end incluyendo Realtime)
-- Próximo módulo: Módulo 8 — ATS AI — Evaluación + Candidate Summary
+- Último módulo completado: Módulo 8 — ATS AI — Evaluación + Candidate Summary (migración `0007_ai.sql`: tabla `ai_evaluations` con RLS de solo lectura para recruiters del job; `src/lib/ai/evaluate.ts` con `evaluateApplication` (Anthropic `claude-opus-4-8`, structured outputs) + `inferYearsFromHistory` (cálculo determinístico de años por skill que además hace upsert de `candidate_skills` inferidas); disparo async post-apply vía `after()` en `applyToJobAction`; card del Kanban muestra score + summary con estado "Evaluando…" mientras no hay `ai_evaluations`)
+- Próximo módulo: Módulo 9 — Rechazo con Feedback IA + Career Roadmap
 
 ## Reglas importantes
 

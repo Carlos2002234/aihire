@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 
+import { evaluateApplication } from "@/lib/ai/evaluate";
 import { createClient } from "@/lib/supabase/server";
 
 async function requireCandidate() {
@@ -32,12 +34,20 @@ export async function applyToJobAction(formData: FormData) {
     if (value) answers[q.id] = String(value);
   }
 
-  await supabase.from("applications").insert({
-    job_id: jobId,
-    candidate_id: candidateId,
-    resume_id: resumeId,
-    answers: Object.keys(answers).length ? answers : null,
-  });
+  const { data: application } = await supabase
+    .from("applications")
+    .insert({
+      job_id: jobId,
+      candidate_id: candidateId,
+      resume_id: resumeId,
+      answers: Object.keys(answers).length ? answers : null,
+    })
+    .select("id")
+    .single();
+
+  if (application) {
+    after(() => evaluateApplication(application.id).catch(console.error));
+  }
 
   revalidatePath(`/jobs/${jobId}`);
 }

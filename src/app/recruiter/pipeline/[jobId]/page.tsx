@@ -23,7 +23,9 @@ export default async function RecruiterPipelinePage({
 
   const { data: applications } = await supabase
     .from("applications")
-    .select("id, stage, candidate_profiles(profiles(full_name)), resumes(name)")
+    .select(
+      "id, stage, candidate_profiles(profiles(full_name)), resumes(name), ai_evaluations(match_score, summary)"
+    )
     .eq("job_id", jobId);
 
   const pipelineApplications = (applications ?? []).map((a) => ({
@@ -31,6 +33,8 @@ export default async function RecruiterPipelinePage({
     stage: a.stage,
     candidateName: a.candidate_profiles?.profiles?.full_name ?? "Candidato",
     resumeName: a.resumes?.name ?? "CV",
+    matchScore: a.ai_evaluations?.match_score ?? null,
+    summary: a.ai_evaluations?.summary ?? null,
   }));
 
   return (

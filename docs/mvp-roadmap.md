@@ -63,12 +63,12 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulo 6
 
 ## Módulo 8: ATS AI — Evaluación + Candidate Summary
-- [ ] Migración: ai_evaluations
-- [ ] `evaluateApplication` (Anthropic): score, resumen ejecutivo, strengths, gaps, skill_analysis, reasoning
-- [ ] `inferYearsFromHistory`: inferir años por skill del historial laboral
-- [ ] Card de candidato en el Kanban muestra el summary (entendible en 20 segundos)
-- [ ] Disparo async post-apply + estado "evaluando..."
-- Archivos: `0006_ai.sql`, `src/lib/ai/evaluate.ts`, `src/lib/ai/prompts.ts`
+- [x] Migración: ai_evaluations
+- [x] `evaluateApplication` (Anthropic): score, resumen ejecutivo, strengths, gaps, skill_analysis, reasoning
+- [x] `inferYearsFromHistory`: inferir años por skill del historial laboral
+- [x] Card de candidato en el Kanban muestra el summary (entendible en 20 segundos)
+- [x] Disparo async post-apply + estado "evaluando..."
+- Archivos: `0007_ai.sql`, `src/lib/ai/evaluate.ts`, `src/lib/ai/prompts.ts`
 - Dependencias: Módulo 7
 
 ## Módulo 9: Rechazo con Feedback IA + Career Roadmap
@@ -76,14 +76,14 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - [ ] Flujo de rechazo del recruiter: elegir razón → preview del feedback IA → enviar
 - [ ] Vista de feedback del candidato (por qué, fortalezas, gaps, comentario)
 - [ ] Roadmap generado automáticamente, con checkboxes de progreso
-- Archivos: `0007_feedback.sql`, `src/lib/ai/feedback.ts`, `src/app/candidate/roadmap/*`
+- Archivos: `0008_feedback.sql`, `src/lib/ai/feedback.ts`, `src/app/candidate/roadmap/*`
 - Dependencias: Módulo 8
 
 ## Módulo 10: Notificaciones + Emails
 - [ ] Migración: notifications
 - [ ] Campana in-app con Realtime + página de notificaciones
 - [ ] Emails con Resend: status change, entrevista, oferta, feedback disponible
-- Archivos: `0008_notifications.sql`, `src/lib/email/*`, `src/components/shared/NotificationBell.tsx`
+- Archivos: `0009_notifications.sql`, `src/lib/email/*`, `src/components/shared/NotificationBell.tsx`
 - Dependencias: Módulo 7
 
 ## Módulo 11: Dashboards + Analytics

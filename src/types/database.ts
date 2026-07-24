@@ -34,6 +34,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_evaluations: {
+        Row: {
+          application_id: string
+          created_at: string
+          gaps: string[]
+          id: string
+          match_score: number
+          model: string
+          reasoning: string
+          skill_analysis: Json
+          strengths: string[]
+          summary: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          gaps?: string[]
+          id?: string
+          match_score: number
+          model: string
+          reasoning: string
+          skill_analysis?: Json
+          strengths?: string[]
+          summary: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          gaps?: string[]
+          id?: string
+          match_score?: number
+          model?: string
+          reasoning?: string
+          skill_analysis?: Json
+          strengths?: string[]
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_evaluations_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       application_events: {
         Row: {
           actor_id: string | null

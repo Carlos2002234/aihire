@@ -18,6 +18,14 @@ interface PipelineApplication {
   stage: ApplicationStage;
   candidateName: string;
   resumeName: string;
+  matchScore: number | null;
+  summary: string | null;
+}
+
+function matchScoreVariant(score: number): "success" | "warning" | "destructive" {
+  if (score >= 70) return "success";
+  if (score >= 40) return "warning";
+  return "destructive";
 }
 
 function ApplicationCard({ app }: { app: PipelineApplication }) {
@@ -39,8 +47,18 @@ function ApplicationCard({ app }: { app: PipelineApplication }) {
         isDragging && "z-10 opacity-50"
       )}
     >
-      <p className="font-medium text-foreground">{app.candidateName}</p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="font-medium text-foreground">{app.candidateName}</p>
+        {app.matchScore != null ? (
+          <Badge variant={matchScoreVariant(app.matchScore)}>{app.matchScore}%</Badge>
+        ) : (
+          <Badge variant="outline">Evaluando…</Badge>
+        )}
+      </div>
       <p className="text-xs text-muted-foreground">{app.resumeName}</p>
+      {app.summary && (
+        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{app.summary}</p>
+      )}
     </div>
   );
 }
