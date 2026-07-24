@@ -19,15 +19,18 @@ export default async function CandidateApplicationsPage() {
   const { data: applications } = await supabase
     .from("applications")
     .select(
-      "id, jobs(title, companies(name)), application_events(id, to_stage, note, created_at), feedback(ai_message, strengths, areas_to_improve)"
+      "id, stage, created_at, jobs(title, work_mode, employment_type, companies(name)), application_events(id, to_stage, note, created_at), feedback(ai_message, strengths, areas_to_improve)"
     )
     .eq("candidate_id", user.id)
     .order("created_at", { ascending: false });
 
   const items = (applications ?? []).map((a) => ({
     id: a.id,
+    stage: a.stage,
+    createdAt: a.created_at,
     jobTitle: a.jobs?.title ?? "Job",
     companyName: a.jobs?.companies?.name ?? null,
+    employmentType: a.jobs?.employment_type ?? null,
     events: a.application_events ?? [],
     feedback: a.feedback
       ? {
@@ -39,10 +42,10 @@ export default async function CandidateApplicationsPage() {
   }));
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 py-12">
+    <main className="flex flex-col gap-6 px-6 py-6">
       <PageHeader
-        title="Mis aplicaciones"
-        description="El estado se actualiza en vivo apenas el recruiter mueve tu aplicación."
+        title="Aplicaciones"
+        description="Seguí y gestioná todas tus aplicaciones en un solo lugar."
       />
 
       {items.length ? (
