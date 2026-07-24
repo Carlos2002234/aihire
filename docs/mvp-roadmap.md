@@ -87,9 +87,9 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulo 7
 
 ## Módulo 11: Dashboards + Analytics
-- [ ] Dashboard candidato completo: métricas, response time, feedback recibido, jobs guardados, completitud
-- [ ] Dashboard recruiter: funnel, conversion rates, tiempos, razones de rechazo comunes
-- [ ] Gráficas (recharts) con estética premium
+- [x] Dashboard candidato completo: métricas, response time, feedback recibido, jobs guardados, completitud
+- [x] Dashboard recruiter: funnel, conversion rates, tiempos, razones de rechazo comunes
+- [x] Gráficas (recharts) con estética premium
 - Archivos: `src/app/candidate/dashboard/*`, `src/app/recruiter/dashboard/*`
 - Dependencias: Módulos 9 y 10
 

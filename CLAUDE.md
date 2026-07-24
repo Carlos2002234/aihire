@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 10 — Notificaciones + Emails (migración `0009_notifications.sql`: tabla `notifications` con Realtime + policies owner-only; trigger `notify_new_application` (recruiter recibe notificación de aplicación nueva) y extensión de `move_application_stage`/`reject_application_with_feedback` para notificar al candidato en cada cambio de etapa/rechazo; `src/lib/email/` con Resend — `sendStageChangeEmail`, `sendFeedbackAvailableEmail` disparados async vía `after()` desde `moveApplicationStageAction` y `generateRoadmap`; `NotificationBell` con Realtime + página `/notifications`, montados en layouts nuevos de `/candidate` y `/recruiter`. Intenté provisionar Resend vía Vercel Marketplace pero quedó pendiente de aceptar términos en el dashboard — se usa `RESEND_API_KEY` manual mientras tanto)
-- Próximo módulo: Módulo 11 — Dashboards + Analytics
+- Último módulo completado: Módulo 11 — Dashboards + Analytics (dashboards de `/candidate` y `/recruiter` reemplazan los placeholders de módulos anteriores; candidato ve aplicaciones totales, tiempo de respuesta promedio, feedback recibido, jobs guardados, completitud del passport y breakdown por etapa; recruiter ve jobs publicados, aplicaciones, conversión a oferta, tiempo a decisión, funnel acumulado por etapa y razones de rechazo más comunes — requirió agregar policy `feedback_select_recruiter` en `0010_dashboards.sql`; gráficas con `recharts` vía `StatTile`/`CountBarChart` reutilizables en `src/components/shared/`; verificado en navegador con datos reales de ambos roles vía Playwright)
+- Próximo módulo: Módulo 12 — AI Resume Builder + Career Coach + Interview Prep (v2, fuera del MVP — confirmar con el usuario antes de arrancar)
 
 ## Reglas importantes
 
