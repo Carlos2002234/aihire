@@ -1,17 +1,29 @@
-import Link from "next/link";
+import { AppShell } from "@/components/shared/app-shell";
+import type { NavItem } from "@/components/shared/app-sidebar";
+import { createClient } from "@/lib/supabase/server";
 
-import { NotificationBell } from "@/components/shared/NotificationBell";
+const NAV_ITEMS: NavItem[] = [
+  { href: "/candidate", label: "Dashboard", icon: "dashboard" },
+  { href: "/jobs", label: "Jobs", icon: "jobs" },
+  { href: "/candidate/applications", label: "Aplicaciones", icon: "applications" },
+  { href: "/candidate/coach", label: "Career Coach", icon: "coach", badge: "Nuevo" },
+  { href: "/candidate/passport", label: "Career Passport", icon: "passport" },
+  { href: "/candidate/roadmap", label: "Roadmap", icon: "roadmap" },
+];
 
-export default function CandidateLayout({ children }: { children: React.ReactNode }) {
+export default async function CandidateLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: profile } = user
+    ? await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle()
+    : { data: null };
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-between border-b border-border px-6 py-3">
-        <Link href="/candidate" className="text-sm font-medium text-foreground">
-          HireFlow
-        </Link>
-        <NotificationBell />
-      </header>
+    <AppShell homeHref="/candidate" navItems={NAV_ITEMS} fullName={profile?.full_name ?? null}>
       {children}
-    </div>
+    </AppShell>
   );
 }

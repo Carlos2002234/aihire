@@ -2,7 +2,6 @@ import { Briefcase, Percent, TrendingDown, UserX, Users } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { signOutAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -33,26 +32,10 @@ export default async function RecruiterDashboardPage() {
     .eq("id", user.id)
     .single();
 
-  const actions = (
-    <>
-      <Button variant="outline" nativeButton={false} render={<Link href="/recruiter/jobs" />}>
-        Jobs
-      </Button>
-      <Button variant="outline" nativeButton={false} render={<Link href="/recruiter/company" />}>
-        Mi compañía
-      </Button>
-      <form action={signOutAction}>
-        <Button type="submit" variant="outline">
-          Cerrar sesión
-        </Button>
-      </form>
-    </>
-  );
-
   if (!recruiterProfile?.company_id) {
     return (
       <main className="mx-auto max-w-3xl px-6 py-12">
-        <PageHeader title={`Hola, ${profile?.full_name ?? "recruiter"}`} actions={actions} />
+        <PageHeader title={`Hola, ${profile?.full_name ?? "recruiter"}`} />
         <EmptyState
           title="Todavía no tenés una compañía"
           description="Creá o unite a una compañía para empezar a publicar jobs."
@@ -135,11 +118,10 @@ export default async function RecruiterDashboardPage() {
     .sort((a, b) => b.value - a.value);
 
   return (
-    <main className="mx-auto flex max-w-4xl flex-col gap-8 px-6 py-12">
+    <main className="flex flex-col gap-8 px-6 py-6">
       <PageHeader
         title={`Hola, ${profile?.full_name ?? "recruiter"}`}
         description="El funnel y los números de tu proceso de contratación."
-        actions={actions}
       />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
