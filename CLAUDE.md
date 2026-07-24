@@ -30,8 +30,8 @@ Plataforma de contratación con IA donde ningún candidato es ghosteado: toda ap
 ## Estado actual del proyecto
 
 - Fase: En desarrollo
-- Último módulo completado: Módulo 5 — Job Creation + Job Board público (migración `0004_jobs.sql`: jobs/job_required_skills/job_questions con lectura pública solo si `status='open'`; flujo recruiter crear→editar (datos, skills, preguntas máx. 5)→publicar/cerrar en `/recruiter/jobs`, job board público con filtros en `/jobs` + `/jobs/[id]`, probado end-to-end)
-- Próximo módulo: Módulo 6 — Easy Apply
+- Último módulo completado: Módulo 6 — Easy Apply (migración `0005_applications.sql`: applications/application_events/saved_jobs con RLS candidato-o-compañía, primer evento del timeline creado automático vía trigger al aplicar; modal `EasyApplyModal` en `/jobs/[id]` — elegir CV, responder preguntas del job, enviar — con estado "Ya aplicaste" y toggle de guardar job, probado end-to-end)
+- Próximo módulo: Módulo 7 — Pipeline Kanban + Timeline del candidato
 
 ## Reglas importantes
 

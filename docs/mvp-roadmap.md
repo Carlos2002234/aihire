@@ -47,10 +47,10 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulo 4
 
 ## Módulo 6: Easy Apply
-- [ ] Migración: applications, application_events, saved_jobs
-- [ ] Modal de apply: 1 clic → elegir resume → responder preguntas (si hay) → enviar
-- [ ] Guardar jobs. Estado "ya aplicaste".
-- [ ] Mobile-first: aplicar en <1 minuto
+- [x] Migración: applications, application_events, saved_jobs
+- [x] Modal de apply: 1 clic → elegir resume → responder preguntas (si hay) → enviar
+- [x] Guardar jobs. Estado "ya aplicaste".
+- [x] Mobile-first: aplicar en <1 minuto
 - Archivos: `0005_applications.sql`, `src/actions/applications.ts`, `src/components/candidate/EasyApplyModal.tsx`
 - Dependencias: Módulos 3 y 5
 
