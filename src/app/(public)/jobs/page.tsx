@@ -10,33 +10,18 @@ import { AppShell } from "@/components/shared/app-shell";
 import { CompanyAvatar } from "@/components/shared/company-avatar";
 import { Sparkline } from "@/components/shared/sparkline";
 import { CANDIDATE_NAV_ITEMS, RECRUITER_NAV_ITEMS } from "@/lib/nav-items";
+import {
+  EMPLOYMENT_TYPES,
+  EMPLOYMENT_TYPE_LABELS,
+  EXPERIENCE_LEVELS,
+  EXPERIENCE_LABELS,
+  WORK_MODES,
+  WORK_MODE_LABELS,
+} from "@/lib/job-labels";
 import { createClient } from "@/lib/supabase/server";
 
-const WORK_MODES = ["remote", "hybrid", "onsite"] as const;
-const EMPLOYMENT_TYPES = ["full_time", "part_time", "contract", "internship"] as const;
-const EXPERIENCE_LEVELS = ["intern", "junior", "mid", "senior", "staff", "lead"] as const;
 const SALARY_FLOORS = [0, 50000, 100000, 150000] as const;
 const PAGE_SIZE = 6;
-
-const WORK_MODE_LABELS: Record<(typeof WORK_MODES)[number], string> = {
-  remote: "Remoto",
-  hybrid: "Híbrido",
-  onsite: "Presencial",
-};
-const EMPLOYMENT_TYPE_LABELS: Record<(typeof EMPLOYMENT_TYPES)[number], string> = {
-  full_time: "Full-time",
-  part_time: "Part-time",
-  contract: "Contrato",
-  internship: "Pasantía",
-};
-const EXPERIENCE_LABELS: Record<(typeof EXPERIENCE_LEVELS)[number], string> = {
-  intern: "Intern",
-  junior: "Junior",
-  mid: "Mid level",
-  senior: "Senior level",
-  staff: "Staff",
-  lead: "Lead",
-};
 
 function selectClassName() {
   return "h-9 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";

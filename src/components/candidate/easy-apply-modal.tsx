@@ -1,5 +1,7 @@
 "use client";
 
+import { Zap } from "lucide-react";
+
 import { applyToJobAction } from "@/actions/applications";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,7 +43,10 @@ function EasyApplyModal({
 
   return (
     <Dialog>
-      <DialogTrigger render={<Button />}>Aplicar</DialogTrigger>
+      <DialogTrigger render={<Button className="gap-1.5" />}>
+        <Zap className="size-4" />
+        Aplicar ahora
+      </DialogTrigger>
       <DialogContent>
         <form action={applyToJobAction} className="flex flex-col gap-4">
           <input type="hidden" name="jobId" value={jobId} />
