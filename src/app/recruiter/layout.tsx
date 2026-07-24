@@ -1,12 +1,6 @@
 import { AppShell } from "@/components/shared/app-shell";
-import type { NavItem } from "@/components/shared/app-sidebar";
+import { RECRUITER_NAV_ITEMS as NAV_ITEMS } from "@/lib/nav-items";
 import { createClient } from "@/lib/supabase/server";
-
-const NAV_ITEMS: NavItem[] = [
-  { href: "/recruiter", label: "Dashboard", icon: "dashboard" },
-  { href: "/recruiter/jobs", label: "Jobs", icon: "jobs" },
-  { href: "/recruiter/company", label: "Mi compañía", icon: "company" },
-];
 
 export default async function RecruiterLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();

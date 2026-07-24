@@ -1,15 +1,6 @@
 import { AppShell } from "@/components/shared/app-shell";
-import type { NavItem } from "@/components/shared/app-sidebar";
+import { CANDIDATE_NAV_ITEMS as NAV_ITEMS } from "@/lib/nav-items";
 import { createClient } from "@/lib/supabase/server";
-
-const NAV_ITEMS: NavItem[] = [
-  { href: "/candidate", label: "Dashboard", icon: "dashboard" },
-  { href: "/jobs", label: "Jobs", icon: "jobs" },
-  { href: "/candidate/applications", label: "Aplicaciones", icon: "applications" },
-  { href: "/candidate/coach", label: "Career Coach", icon: "coach", badge: "Nuevo" },
-  { href: "/candidate/passport", label: "Career Passport", icon: "passport" },
-  { href: "/candidate/roadmap", label: "Roadmap", icon: "roadmap" },
-];
 
 export default async function CandidateLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();

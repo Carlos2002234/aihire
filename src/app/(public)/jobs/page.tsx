@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { AppShell } from "@/components/shared/app-shell";
 import { CompanyAvatar } from "@/components/shared/company-avatar";
 import { Sparkline } from "@/components/shared/sparkline";
+import { CANDIDATE_NAV_ITEMS, RECRUITER_NAV_ITEMS } from "@/lib/nav-items";
 import { createClient } from "@/lib/supabase/server";
 
 const WORK_MODES = ["remote", "hybrid", "onsite"] as const;
@@ -87,10 +89,18 @@ export default async function JobsBoardPage({
   } = await supabase.auth.getUser();
 
   let isCandidate = false;
+  let isRecruiter = false;
+  let fullName: string | null = null;
   const savedJobIds = new Set<string>();
   if (user) {
-    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, full_name")
+      .eq("id", user.id)
+      .maybeSingle();
     isCandidate = profile?.role === "candidate";
+    isRecruiter = profile?.role === "recruiter";
+    fullName = profile?.full_name ?? null;
     if (isCandidate) {
       const { data: saved } = await supabase.from("saved_jobs").select("job_id").eq("candidate_id", user.id);
       for (const s of saved ?? []) savedJobIds.add(s.job_id);
@@ -172,34 +182,8 @@ export default async function JobsBoardPage({
   if (company) activeFilters.push({ key: "company", label: companyOptions.get(company) ?? "Compañía" });
   if (salary_min) activeFilters.push({ key: "salary_min", label: `Desde $${Number(salary_min).toLocaleString()}` });
 
-  return (
-    <div className="min-h-screen bg-background">
-      <header className="flex items-center justify-between border-b border-border px-6 py-3">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-            H
-          </span>
-          <span className="font-heading text-sm font-semibold text-foreground">HireFlow</span>
-        </Link>
-        <div className="flex items-center gap-3">
-          {user ? (
-            <Button variant="outline" size="sm" nativeButton={false} render={<Link href={isCandidate ? "/candidate" : "/recruiter"} />}>
-              Mi dashboard
-            </Button>
-          ) : (
-            <>
-              <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/login" />}>
-                Iniciar sesión
-              </Button>
-              <Button size="sm" nativeButton={false} render={<Link href="/register" />}>
-                Registrarme
-              </Button>
-            </>
-          )}
-        </div>
-      </header>
-
-      <div className="mx-auto flex max-w-6xl gap-6 px-6 py-6">
+  const content = (
+    <div className="mx-auto flex max-w-6xl gap-6 px-6 py-6">
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
@@ -461,6 +445,39 @@ export default async function JobsBoardPage({
           )}
         </div>
       </div>
+  );
+
+  if (user) {
+    return (
+      <AppShell
+        homeHref={isCandidate ? "/candidate" : "/recruiter"}
+        navItems={isRecruiter ? RECRUITER_NAV_ITEMS : CANDIDATE_NAV_ITEMS}
+        fullName={fullName}
+      >
+        {content}
+      </AppShell>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="flex items-center justify-between border-b border-border px-6 py-3">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
+            H
+          </span>
+          <span className="font-heading text-sm font-semibold text-foreground">HireFlow</span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/login" />}>
+            Iniciar sesión
+          </Button>
+          <Button size="sm" nativeButton={false} render={<Link href="/register" />}>
+            Registrarme
+          </Button>
+        </div>
+      </header>
+      {content}
     </div>
   );
 }
