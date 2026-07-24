@@ -211,6 +211,62 @@ export type Database = {
           },
         ]
       }
+      companies: {
+        Row: {
+          benefits: string[] | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          industry: string | null
+          locations: string[] | null
+          logo_url: string | null
+          name: string
+          photos: string[] | null
+          size: string | null
+          social: Json | null
+          website: string | null
+        }
+        Insert: {
+          benefits?: string[] | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          industry?: string | null
+          locations?: string[] | null
+          logo_url?: string | null
+          name: string
+          photos?: string[] | null
+          size?: string | null
+          social?: Json | null
+          website?: string | null
+        }
+        Update: {
+          benefits?: string[] | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          industry?: string | null
+          locations?: string[] | null
+          logo_url?: string | null
+          name?: string
+          photos?: string[] | null
+          size?: string | null
+          social?: Json | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "companies_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       educations: {
         Row: {
           candidate_id: string
@@ -319,6 +375,42 @@ export type Database = {
             columns: ["candidate_id"]
             isOneToOne: false
             referencedRelation: "candidate_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recruiter_profiles: {
+        Row: {
+          company_id: string | null
+          id: string
+          position: string | null
+          verified: boolean
+        }
+        Insert: {
+          company_id?: string | null
+          id: string
+          position?: string | null
+          verified?: boolean
+        }
+        Update: {
+          company_id?: string | null
+          id?: string
+          position?: string | null
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recruiter_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recruiter_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

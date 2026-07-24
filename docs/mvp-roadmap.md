@@ -32,9 +32,9 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 - Dependencias: Módulo 2
 
 ## Módulo 4: Company + Recruiter Profile
-- [ ] Migración: companies, recruiter_profiles
-- [ ] Onboarding de recruiter: crear/unirse a compañía
-- [ ] Página pública de compañía
+- [x] Migración: companies, recruiter_profiles
+- [x] Onboarding de recruiter: crear/unirse a compañía
+- [x] Página pública de compañía
 - Archivos: `0003_companies.sql`, `src/app/recruiter/company/*`, `src/app/(public)/companies/[id]/*`
 - Dependencias: Módulo 2
 
