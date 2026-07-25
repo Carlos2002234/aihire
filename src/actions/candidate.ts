@@ -5,13 +5,14 @@ import { redirect } from "next/navigation";
 
 import { fetchCandidatePassport } from "@/lib/ai/candidate";
 import { generateResumeContent, renderResumePdf } from "@/lib/ai/resume";
-import type { TargetJobForResume } from "@/lib/ai/prompts";
+import type { ResumeOutput, TargetJobForResume } from "@/lib/ai/prompts";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
 type WorkMode = Database["public"]["Enums"]["work_mode"];
 
 const PASSPORT_PATH = "/candidate/passport";
+const RESUME_BUILDER_PATH = "/candidate/resume-builder";
 
 async function requireCandidate() {
   const supabase = await createClient();
@@ -245,7 +246,30 @@ export async function uploadResumeAction(formData: FormData) {
   revalidatePath(PASSPORT_PATH);
 }
 
-export async function generateResumeAction(formData: FormData) {
+export async function generateTailoredResumeAction(
+  positionTitle: string,
+  positionDescription: string
+): Promise<{ resume: ResumeOutput } | { error: string }> {
+  const { supabase, candidateId } = await requireCandidate();
+
+  const title = positionTitle.trim();
+  const description = positionDescription.trim();
+  const targetJob: TargetJobForResume | null = title ? { title, description, requiredSkills: [] } : null;
+
+  try {
+    const candidate = await fetchCandidatePassport(supabase, candidateId);
+    const resume = await generateResumeContent({ candidate, targetJob });
+    return { resume };
+  } catch {
+    return { error: "No pudimos generar el CV. Probá de nuevo en unos segundos." };
+  }
+}
+
+export async function saveGeneratedResumeAction(
+  resume: ResumeOutput,
+  positionTitle: string | null,
+  positionDescription: string | null
+): Promise<{ error: string | null; resumeId?: string }> {
   const { supabase, candidateId } = await requireCandidate();
 
   const { data: profile } = await supabase
@@ -254,53 +278,53 @@ export async function generateResumeAction(formData: FormData) {
     .eq("id", candidateId)
     .single();
 
-  const candidate = await fetchCandidatePassport(supabase, candidateId);
-
-  const targetJobId = formData.get("targetJobId");
-  let targetJob: TargetJobForResume | null = null;
-
-  if (targetJobId && typeof targetJobId === "string") {
-    const { data: job } = await supabase
-      .from("jobs")
-      .select("title, description, job_required_skills(min_years, required, language_level, skills(name))")
-      .eq("id", targetJobId)
-      .single();
-
-    if (job) {
-      targetJob = {
-        title: job.title,
-        description: job.description ?? "",
-        requiredSkills: (job.job_required_skills ?? [])
-          .filter((rs) => rs.skills)
-          .map((rs) => ({
-            name: rs.skills!.name,
-            minYears: rs.min_years,
-            required: rs.required,
-            languageLevel: rs.language_level,
-          })),
-      };
-    }
-  }
-
-  const resumeContent = await generateResumeContent({ candidate, targetJob });
-  const pdfBuffer = await renderResumePdf(profile?.full_name ?? "Candidato", resumeContent);
+  const pdfBuffer = await renderResumePdf(profile?.full_name ?? "Candidato", resume);
 
   const path = `${candidateId}/${crypto.randomUUID()}-cv-ia.pdf`;
   const { error: uploadError } = await supabase.storage.from("resumes").upload(path, pdfBuffer, {
     contentType: "application/pdf",
   });
+  if (uploadError) return { error: uploadError.message };
 
-  if (!uploadError) {
-    await supabase.from("resumes").insert({
+  const { data: inserted, error: insertError } = await supabase
+    .from("resumes")
+    .insert({
       candidate_id: candidateId,
-      name: targetJob ? `CV IA — ${targetJob.title}` : "CV generado con IA",
+      name: positionTitle ? `CV IA — ${positionTitle}` : "CV generado con IA",
       storage_path: path,
       is_ai_generated: true,
-      target_job_id: typeof targetJobId === "string" && targetJobId ? targetJobId : null,
-    });
-  }
+      target_position_title: positionTitle,
+      target_position_description: positionDescription,
+    })
+    .select("id")
+    .single();
+
+  if (insertError || !inserted) return { error: insertError?.message ?? "No pudimos guardar el CV." };
 
   revalidatePath(PASSPORT_PATH);
+  revalidatePath(RESUME_BUILDER_PATH);
+
+  return { error: null, resumeId: inserted.id };
+}
+
+export async function getResumeDownloadUrlAction(
+  resumeId: string
+): Promise<{ url: string | null; error: string | null }> {
+  const { supabase, candidateId } = await requireCandidate();
+
+  const { data: resume } = await supabase
+    .from("resumes")
+    .select("storage_path")
+    .eq("id", resumeId)
+    .eq("candidate_id", candidateId)
+    .single();
+
+  if (!resume) return { url: null, error: "CV no encontrado." };
+
+  const { data, error } = await supabase.storage.from("resumes").createSignedUrl(resume.storage_path, 60);
+  if (error || !data) return { url: null, error: error?.message ?? "No pudimos generar el link de descarga." };
+
+  return { url: data.signedUrl, error: null };
 }
 
 export async function deleteResumeAction(formData: FormData) {

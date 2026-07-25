@@ -13,6 +13,7 @@ import {
   Pencil,
   Sparkles,
   Trash2,
+  Wand2,
 } from "lucide-react";
 
 import {
@@ -28,7 +29,6 @@ import {
   deleteProjectAction,
   deleteResumeAction,
   deleteWorkExperienceAction,
-  generateResumeAction,
   removeSkillAction,
   updateProfileSummaryAction,
   uploadResumeAction,
@@ -40,6 +40,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 import { CircularProgress } from "@/components/shared/circular-progress";
 import { PersonAvatar } from "@/components/shared/person-avatar";
+import { ResumeDownloadButton } from "@/components/candidate/resume-download-button";
 import { createClient } from "@/lib/supabase/server";
 
 const WORK_MODES = [
@@ -96,7 +97,7 @@ export default async function PassportPage({
     { data: projects },
     { data: resumes },
     { data: skillsCatalog },
-    { data: savedJobs },
+    { count: savedJobsCount },
     { count: applicationsCount },
   ] = await Promise.all([
     supabase
@@ -138,9 +139,8 @@ export default async function PassportPage({
     supabase.from("skills").select("id, name, category").order("category").order("name"),
     supabase
       .from("saved_jobs")
-      .select("job_id, jobs(title)")
-      .eq("candidate_id", user.id)
-      .order("created_at", { ascending: false }),
+      .select("job_id", { count: "exact", head: true })
+      .eq("candidate_id", user.id),
     supabase.from("applications").select("id", { count: "exact", head: true }).eq("candidate_id", user.id),
   ]);
 
@@ -194,7 +194,7 @@ export default async function PassportPage({
                     <p className="text-xs text-muted-foreground">Aplicaciones</p>
                   </div>
                   <div>
-                    <p className="text-lg font-semibold text-foreground">{savedJobs?.length ?? 0}</p>
+                    <p className="text-lg font-semibold text-foreground">{savedJobsCount ?? 0}</p>
                     <p className="text-xs text-muted-foreground">Jobs guardados</p>
                   </div>
                   <div>
@@ -794,61 +794,68 @@ export default async function PassportPage({
           )}
 
           {tab === "resume" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>CVs</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-4">
-                {resumes?.length ? (
-                  <ul className="flex flex-col gap-2">
-                    {resumes.map((resume) => (
-                      <li
-                        key={resume.id}
-                        className="flex items-center justify-between gap-3 rounded-lg border border-border p-3"
-                      >
-                        <span className="text-sm text-foreground">{resume.name}</span>
-                        <form action={deleteResumeAction}>
-                          <input type="hidden" name="id" value={resume.id} />
-                          <input type="hidden" name="storagePath" value={resume.storage_path} />
-                          <Button type="submit" variant="ghost" size="icon-sm" aria-label="Eliminar">
-                            <Trash2 />
-                          </Button>
-                        </form>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <EmptyState title="Sin CVs subidos todavía" className="py-8" />
-                )}
-                <form action={uploadResumeAction} className="flex items-center gap-2 border-t border-border pt-4">
-                  <input
-                    type="file"
-                    name="file"
-                    accept=".pdf,.doc,.docx"
-                    required
-                    className="text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border file:border-input file:bg-transparent file:px-2.5 file:py-1 file:text-sm file:font-medium file:text-foreground"
-                  />
-                  <Button type="submit" variant="outline">
-                    Subir CV
+            <>
+              <Card className="bg-gradient-to-br from-primary/10 to-transparent">
+                <CardContent className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <Wand2 className="size-8 shrink-0 text-primary" />
+                    <div>
+                      <p className="font-medium text-foreground">CV Builder con IA</p>
+                      <p className="text-sm text-muted-foreground">
+                        Ajustá tu CV a una posición específica y revisalo antes de exportar.
+                      </p>
+                    </div>
+                  </div>
+                  <Button render={<Link href="/candidate/resume-builder" />} nativeButton={false}>
+                    Abrir CV Builder
                   </Button>
-                </form>
-                <form action={generateResumeAction} className="flex items-center gap-2 border-t border-border pt-4">
-                  <select name="targetJobId" defaultValue="" className={selectClassName()}>
-                    <option value="">CV genérico</option>
-                    {(savedJobs ?? [])
-                      .filter((sj) => sj.jobs)
-                      .map((sj) => (
-                        <option key={sj.job_id} value={sj.job_id}>
-                          Targeteado a: {sj.jobs!.title}
-                        </option>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>CVs</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                  {resumes?.length ? (
+                    <ul className="flex flex-col gap-2">
+                      {resumes.map((resume) => (
+                        <li
+                          key={resume.id}
+                          className="flex items-center justify-between gap-3 rounded-lg border border-border p-3"
+                        >
+                          <span className="text-sm text-foreground">{resume.name}</span>
+                          <div className="flex items-center gap-1">
+                            <ResumeDownloadButton resumeId={resume.id} />
+                            <form action={deleteResumeAction}>
+                              <input type="hidden" name="id" value={resume.id} />
+                              <input type="hidden" name="storagePath" value={resume.storage_path} />
+                              <Button type="submit" variant="ghost" size="icon-sm" aria-label="Eliminar">
+                                <Trash2 />
+                              </Button>
+                            </form>
+                          </div>
+                        </li>
                       ))}
-                  </select>
-                  <Button type="submit" variant="outline" className="shrink-0">
-                    Generar CV con IA
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                    </ul>
+                  ) : (
+                    <EmptyState title="Sin CVs subidos todavía" className="py-8" />
+                  )}
+                  <form action={uploadResumeAction} className="flex items-center gap-2 border-t border-border pt-4">
+                    <input
+                      type="file"
+                      name="file"
+                      accept=".pdf,.doc,.docx"
+                      required
+                      className="text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border file:border-input file:bg-transparent file:px-2.5 file:py-1 file:text-sm file:font-medium file:text-foreground"
+                    />
+                    <Button type="submit" variant="outline">
+                      Subir CV
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </>
           )}
         </div>
 

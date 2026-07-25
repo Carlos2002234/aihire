@@ -876,6 +876,8 @@ export type Database = {
           name: string
           storage_path: string
           target_job_id: string | null
+          target_position_description: string | null
+          target_position_title: string | null
         }
         Insert: {
           candidate_id: string
@@ -885,6 +887,8 @@ export type Database = {
           name: string
           storage_path: string
           target_job_id?: string | null
+          target_position_description?: string | null
+          target_position_title?: string | null
         }
         Update: {
           candidate_id?: string
@@ -894,6 +898,8 @@ export type Database = {
           name?: string
           storage_path?: string
           target_job_id?: string | null
+          target_position_description?: string | null
+          target_position_title?: string | null
         }
         Relationships: [
           {

@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   Map,
   UserRound,
+  Wand2,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -25,6 +26,7 @@ const ICONS = {
   passport: UserRound,
   roadmap: Map,
   company: Building2,
+  resumeBuilder: Wand2,
 } as const;
 
 type IconName = keyof typeof ICONS;

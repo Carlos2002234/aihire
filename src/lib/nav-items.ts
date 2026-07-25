@@ -6,6 +6,7 @@ const CANDIDATE_NAV_ITEMS: NavItem[] = [
   { href: "/candidate/applications", label: "Aplicaciones", icon: "applications" },
   { href: "/candidate/coach", label: "Career Coach", icon: "coach", badge: "Nuevo" },
   { href: "/candidate/passport", label: "Career Passport", icon: "passport" },
+  { href: "/candidate/resume-builder", label: "CV Builder", icon: "resumeBuilder", badge: "IA" },
   { href: "/candidate/roadmap", label: "Roadmap", icon: "roadmap" },
 ];
 
