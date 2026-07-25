@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
 import type { UIMessage } from "ai";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
-import { CoachChat } from "@/components/candidate/coach-chat";
+import { CoachChat, type CoachMessageMetadata } from "@/components/candidate/coach-chat";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function CareerCoachPage() {
@@ -13,6 +12,12 @@ export default async function CareerCoachPage() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, avatar_url")
+    .eq("id", user.id)
+    .maybeSingle();
 
   let { data: conversation } = await supabase
     .from("coach_conversations")
@@ -34,30 +39,32 @@ export default async function CareerCoachPage() {
   const { data: messageRows } = conversation
     ? await supabase
         .from("coach_messages")
-        .select("id, role, content")
+        .select("id, role, content, created_at")
         .eq("conversation_id", conversation.id)
         .order("created_at", { ascending: true })
     : { data: [] };
 
-  const initialMessages: UIMessage[] = (messageRows ?? []).map((m) => ({
+  const initialMessages: UIMessage<CoachMessageMetadata>[] = (messageRows ?? []).map((m) => ({
     id: m.id,
     role: m.role as "user" | "assistant",
     parts: [{ type: "text", text: m.content }],
+    metadata: { createdAt: m.created_at },
   }));
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 py-12">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-6 py-6">
       <PageHeader
         title="Career Coach"
-        description="Charlá sobre tu perfil, tu búsqueda y tu estrategia de carrera con IA."
+        description="Charlá sobre tu perfil, tu búsqueda y tu estrategia de carrera con IA — basado en tu Career Passport."
       />
-      <Card>
-        <CardContent>
-          {conversation ? (
-            <CoachChat conversationId={conversation.id} initialMessages={initialMessages} />
-          ) : null}
-        </CardContent>
-      </Card>
+      {conversation ? (
+        <CoachChat
+          conversationId={conversation.id}
+          initialMessages={initialMessages}
+          fullName={profile?.full_name ?? null}
+          avatarUrl={profile?.avatar_url ?? null}
+        />
+      ) : null}
     </main>
   );
 }
