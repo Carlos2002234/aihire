@@ -42,6 +42,16 @@ export async function updateProfileSummaryAction(formData: FormData) {
   const { supabase, candidateId } = await requireCandidate();
 
   await supabase
+    .from("profiles")
+    .update({
+      full_name: optionalText(formData.get("fullName")),
+      headline: optionalText(formData.get("headline")),
+      location_city: optionalText(formData.get("locationCity")),
+      location_country: optionalText(formData.get("locationCountry")),
+    })
+    .eq("id", candidateId);
+
+  await supabase
     .from("candidate_profiles")
     .update({
       bio: optionalText(formData.get("bio")),
