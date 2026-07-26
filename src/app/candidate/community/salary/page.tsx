@@ -94,7 +94,7 @@ export default async function CommunitySalaryPage({ searchParams }: { searchPara
   const activeFilters = Object.entries(sp).filter(([key, v]) => v && key !== "shared");
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-6 py-6">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-6">
       <PageHeader
         title="Community"
         description="Conocimiento profesional compartido: preguntas, salarios y experiencias de entrevistas reales."

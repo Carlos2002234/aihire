@@ -58,7 +58,7 @@ export default async function CommunityInterviewsPage({
   const companies = [...companyMap.values()].sort((a, b) => b.count - a.count);
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-6 py-6">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-6">
       <PageHeader
         title="Community"
         description="Conocimiento profesional compartido: preguntas, salarios y experiencias de entrevistas reales."
@@ -82,7 +82,7 @@ export default async function CommunityInterviewsPage({
       </div>
 
       {companies.length ? (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {companies.map((c) => {
             const avgDifficulty = c.totalDifficulty / c.count;
             const difficulty = difficultyLabel(avgDifficulty);
