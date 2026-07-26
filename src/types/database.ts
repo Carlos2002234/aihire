@@ -419,6 +419,243 @@ export type Database = {
           },
         ]
       }
+      community_answer_votes: {
+        Row: {
+          answer_id: string
+          created_at: string
+          id: string
+          voter_id: string
+        }
+        Insert: {
+          answer_id: string
+          created_at?: string
+          id?: string
+          voter_id: string
+        }
+        Update: {
+          answer_id?: string
+          created_at?: string
+          id?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_answer_votes_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "community_answers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_answer_votes_voter_id_fkey"
+            columns: ["voter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_answers: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          is_anonymous: boolean
+          is_helpful: boolean
+          question_id: string
+          upvotes: number
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean
+          is_helpful?: boolean
+          question_id: string
+          upvotes?: number
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean
+          is_helpful?: boolean
+          question_id?: string
+          upvotes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_answers_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_interview_experiences: {
+        Row: {
+          company: string
+          created_at: string
+          difficulty: number
+          duration: string | null
+          id: string
+          interview_type: string
+          job_title: string
+          overall_experience: string
+          questions_remembered: string | null
+          rounds: number
+          submitter_id: string
+          tips: string | null
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          difficulty: number
+          duration?: string | null
+          id?: string
+          interview_type: string
+          job_title: string
+          overall_experience: string
+          questions_remembered?: string | null
+          rounds: number
+          submitter_id: string
+          tips?: string | null
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          difficulty?: number
+          duration?: string | null
+          id?: string
+          interview_type?: string
+          job_title?: string
+          overall_experience?: string
+          questions_remembered?: string | null
+          rounds?: number
+          submitter_id?: string
+          tips?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_interview_experiences_submitter_id_fkey"
+            columns: ["submitter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_questions: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          is_anonymous: boolean
+          tags: string[]
+          title: string
+          views: number
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean
+          tags?: string[]
+          title: string
+          views?: number
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean
+          tags?: string[]
+          title?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_questions_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_salary_entries: {
+        Row: {
+          bonus_amount: number | null
+          certifications: string[]
+          city: string | null
+          company: string | null
+          country: string
+          created_at: string
+          id: string
+          industry: string | null
+          job_title: string
+          salary_amount: number
+          salary_currency: string
+          submitter_id: string
+          work_mode: Database["public"]["Enums"]["work_mode"] | null
+          years_experience: number
+        }
+        Insert: {
+          bonus_amount?: number | null
+          certifications?: string[]
+          city?: string | null
+          company?: string | null
+          country: string
+          created_at?: string
+          id?: string
+          industry?: string | null
+          job_title: string
+          salary_amount: number
+          salary_currency?: string
+          submitter_id: string
+          work_mode?: Database["public"]["Enums"]["work_mode"] | null
+          years_experience: number
+        }
+        Update: {
+          bonus_amount?: number | null
+          certifications?: string[]
+          city?: string | null
+          company?: string | null
+          country?: string
+          created_at?: string
+          id?: string
+          industry?: string | null
+          job_title?: string
+          salary_amount?: number
+          salary_currency?: string
+          submitter_id?: string
+          work_mode?: Database["public"]["Enums"]["work_mode"] | null
+          years_experience?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_salary_entries_submitter_id_fkey"
+            columns: ["submitter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           benefits: string[] | null
@@ -1088,12 +1325,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      increment_question_views: {
+        Args: { p_question_id: string }
+        Returns: undefined
+      }
+      mark_answer_helpful: { Args: { p_answer_id: string }; Returns: undefined }
       move_application_stage: {
         Args: {
           p_application_id: string
           p_note?: string
           p_to_stage: Database["public"]["Enums"]["application_stage"]
         }
+        Returns: undefined
+      }
+      recalculate_answer_upvotes: {
+        Args: { p_answer_id: string }
         Returns: undefined
       }
       recalculate_passport_completion: {

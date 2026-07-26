@@ -98,11 +98,18 @@ Los módulos 12–13 NO son parte del MVP. No construirlos sin decisión explíc
 ## v2 (NO construir en MVP)
 
 ## Módulo 12: AI Resume Builder + Career Coach + Interview Prep
-- [x] AI Resume Builder: `generateResume` (passport + job objetivo opcional → contenido estructurado → PDF con `@react-pdf/renderer`), botón "Generar CV con IA" en `/candidate/passport`
-- [x] Career Coach: chat con streaming en `/candidate/coach`, tablas `coach_conversations`/`coach_messages`. Usa Vercel AI SDK (`ai` + `@ai-sdk/anthropic` + `@ai-sdk/react`, `useChat` + `streamText`) en vez del SDK crudo de Anthropic — única excepción en el proyecto, justificada porque el streaming a `useChat` necesita un endpoint HTTP (`/api/coach/route.ts`), algo que un Server Action no puede transportar
+- [x] AI Resume Builder: CV Builder en dos pasos en `/candidate/resume-builder` — `generateTailoredResumeAction` genera contenido ajustado a una posición (texto libre, de HireFlow o externa) sin persistir nada, el candidato lo revisa/edita en una preview tipo documento, y `saveGeneratedResumeAction` recién ahí renderiza el PDF (`@react-pdf/renderer`) y lo sube. Reemplazó el viejo flujo de un clic
+- [x] Career Coach: chat con streaming en `/candidate/coach`, tablas `coach_conversations`/`coach_messages`. Usa Vercel AI SDK (`ai` + `@ai-sdk/anthropic` + `@ai-sdk/react`, `useChat` + `streamText`) en vez del SDK crudo de Anthropic — única excepción en el proyecto, justificada porque el streaming a `useChat` necesita un endpoint HTTP (`/api/coach/route.ts`), algo que un Server Action no puede transportar. UI con markdown renderizado, avatares, prompts sugeridos, botón de detener generación
 - [ ] Interview Prep: sin spec todavía — definir modelo de datos y flujo antes de construir
-- Archivos (Resume Builder): `src/lib/ai/resume.tsx`, `src/actions/candidate.ts` (`generateResumeAction`)
+- Archivos (Resume Builder): `src/lib/ai/resume.tsx`, `src/actions/candidate.ts` (`generateTailoredResumeAction`, `saveGeneratedResumeAction`, `getResumeDownloadUrlAction`), `src/app/candidate/resume-builder/*`
 - Archivos (Career Coach): `0011_coach.sql`, `src/app/api/coach/route.ts`, `src/app/candidate/coach/page.tsx`, `src/components/candidate/coach-chat.tsx`
 
 ## Módulo 13: Community
+- [x] Migración `0013_community.sql`: `community_questions`/`community_answers`/`community_answer_votes` (upvotes desnormalizados vía trigger), `community_salary_entries`, `community_interview_experiences`; funciones `mark_answer_helpful` y `increment_question_views` (SECURITY DEFINER); RLS de lectura abierta a cualquier autenticado, insert solo propio
+- [x] Preguntas y respuestas: `/candidate/community/questions` (listado + búsqueda + modal "Hacer una pregunta"), detalle con upvote, "marcar como útil" (solo el autor de la pregunta), badge de recruiter verificado (`recruiter_profiles.verified`), publicación anónima opcional
+- [x] Salary Transparency: `/candidate/community/salary` — stats reales (promedio/mediana/máximo/mínimo) y distribución (histograma con recharts, skill de dataviz) calculados de los datos filtrados, filtros (país/puesto/experiencia/modalidad/compañía), tabla anónima, formulario en `/candidate/community/salary/share`
+- [x] Interview Experiences: `/candidate/community/interviews` (compañías agregadas por dificultad/rondas promedio), página por compañía con "preguntas más mencionadas" (coincidencias textuales reales entre reportes, no NLP) y experiencias recientes, formulario en `/candidate/community/interviews/share`
+- Archivos: `0013_community.sql`, `src/actions/community.ts`, `src/app/candidate/community/**`, `src/components/community/*`
+- Nota: sin datos semilla falsos — el módulo arranca vacío hasta que usuarios reales publiquen contenido
+
 ## Módulo 14: Búsqueda avanzada de candidatos por recruiters + matching proactivo

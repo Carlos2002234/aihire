@@ -12,6 +12,7 @@ import {
   FileText,
   LayoutDashboard,
   Map,
+  Users2,
   UserRound,
   Wand2,
 } from "lucide-react";
@@ -27,6 +28,7 @@ const ICONS = {
   roadmap: Map,
   company: Building2,
   resumeBuilder: Wand2,
+  community: Users2,
 } as const;
 
 type IconName = keyof typeof ICONS;
