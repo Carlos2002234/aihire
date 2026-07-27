@@ -4,8 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { fetchCandidatePassport } from "@/lib/ai/candidate";
+import { analyzeProfile } from "@/lib/ai/profile-analysis";
 import { generateResumeContent, renderResumePdf } from "@/lib/ai/resume";
-import type { ResumeOutput, TargetJobForResume } from "@/lib/ai/prompts";
+import type { ProfileAnalysisOutput, ResumeOutput, TargetJobForResume } from "@/lib/ai/prompts";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
@@ -340,4 +341,18 @@ export async function deleteResumeAction(formData: FormData) {
     .eq("candidate_id", candidateId);
 
   revalidatePath(PASSPORT_PATH);
+}
+
+export async function analyzeProfileAction(): Promise<
+  { analysis: ProfileAnalysisOutput } | { error: string }
+> {
+  const { supabase, candidateId } = await requireCandidate();
+
+  try {
+    const candidate = await fetchCandidatePassport(supabase, candidateId);
+    const analysis = await analyzeProfile(candidate);
+    return { analysis };
+  } catch {
+    return { error: "No pudimos analizar tu perfil. Probá de nuevo en unos segundos." };
+  }
 }

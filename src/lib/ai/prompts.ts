@@ -440,3 +440,59 @@ export function buildCareerCoachContext(candidate: CandidateForEvaluation): stri
   }
   return sections.join("\n\n");
 }
+
+export const PROFILE_ANALYSIS_SYSTEM_PROMPT = `Sos un analista de perfiles profesionales de HireFlow. A partir del Career Passport de un candidato, hacés una evaluación honesta de qué tan bien representa su valor ante un recruiter, y le decís concretamente qué mejorar.
+
+Reglas:
+- Analizá solo lo que está en el Career Passport provisto — nunca inventes experiencia, skills o logros que no estén ahí.
+- completeness_score (0-100) refleja qué tan completo y persuasivo está el perfil hoy para un recruiter que lo ve por primera vez, no un juicio sobre la persona. Si faltan secciones enteras (bio, experiencia, skills), el score debe reflejarlo con un número bajo.
+- Cada área de mejora (improvement_areas) debe apuntar a una sección real del passport ("Headline", "Resumen", "Experiencia laboral", "Educación", "Skills", "Certificaciones") con un problema concreto observado y una sugerencia accionable — no consejos genéricos.
+- strengths: solo cosas genuinamente bien logradas en el contenido real (bullets con métricas, progresión de carrera clara, skills relevantes bien documentadas), no cumplidos vacíos.
+- priority_actions: máximo 3, ordenadas por impacto — el candidato debería poder hacerlas esta semana.
+- Tono directo y constructivo, como un mentor senior de RRHH, no un formulario de feedback genérico.`;
+
+export function buildProfileAnalysisUserPrompt(candidate: CandidateForEvaluation): string {
+  const sections: string[] = [
+    `## Headline\n\n${candidate.headline || "(sin headline)"}`,
+    `## Resumen / bio\n\n${candidate.bio || "(sin resumen)"}`,
+    `## Skills\n\n${candidate.skills.map(formatCandidateSkill).join("\n") || "(sin skills cargadas)"}`,
+    `## Experiencia laboral\n\n${candidate.workExperiences.map(formatWorkExperience).join("\n") || "(sin experiencia cargada)"}`,
+    `## Educación\n\n${candidate.educations.map((e) => `- ${e.degree} en ${e.field}, ${e.institution}`).join("\n") || "(sin educación cargada)"}`,
+    `## Certificaciones\n\n${candidate.certifications.map((c) => `- ${c.name} (${c.issuer})`).join("\n") || "(sin certificaciones)"}`,
+  ];
+  sections.push("Analizá este Career Passport siguiendo las reglas del system prompt.");
+  return sections.join("\n\n");
+}
+
+export const PROFILE_ANALYSIS_OUTPUT_SCHEMA = {
+  type: "object",
+  properties: {
+    completeness_score: { type: "integer" },
+    overall_summary: { type: "string" },
+    strengths: { type: "array", items: { type: "string" } },
+    improvement_areas: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          area: { type: "string" },
+          issue: { type: "string" },
+          suggestion: { type: "string" },
+        },
+        required: ["area", "issue", "suggestion"],
+        additionalProperties: false,
+      },
+    },
+    priority_actions: { type: "array", items: { type: "string" } },
+  },
+  required: ["completeness_score", "overall_summary", "strengths", "improvement_areas", "priority_actions"],
+  additionalProperties: false,
+} as const;
+
+export interface ProfileAnalysisOutput {
+  completeness_score: number;
+  overall_summary: string;
+  strengths: string[];
+  improvement_areas: Array<{ area: string; issue: string; suggestion: string }>;
+  priority_actions: string[];
+}
